@@ -6,6 +6,7 @@ import * as z from 'zod';
 import { useRouter } from 'next/navigation';
 import { useEmergencyStore } from '../../store/useEmergencyStore';
 import PageTransition from '../../components/layout/PageTransition';
+import { supabase } from '../../lib/supabaseClient';
 
 const formSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -46,7 +47,7 @@ export default function PatientDetailsPage() {
 
   const gender = watch('gender');
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = async (data: FormData) => {
     setPatientDetails({
       name: data.name,
       age: data.age,
@@ -57,6 +58,51 @@ export default function PatientDetailsPage() {
       medications: data.medications || '',
       allergies: data.allergies || '',
     });
+
+    let currentSessionId = useEmergencyStore.getState().sessionId;
+    if (!currentSessionId) {
+      currentSessionId = crypto.randomUUID();
+      useEmergencyStore.getState().setSessionId(currentSessionId);
+    }
+
+    try {
+      const payload = {
+        name: data.name,
+        age: data.age,
+        gender: data.gender,
+        weight: data.weight || null,
+        blood_group: data.bloodGroup || null,
+        medical_conditions: data.medicalConditions || null,
+        medications: data.medications || null,
+        allergies: data.allergies || null,
+        emergency_description: '',
+        language: 'en'
+      };
+      
+      console.log("Inserting payload into patient_cases:", payload);
+
+      const { data: insertData, error } = await supabase
+        .from('patient_cases')
+        .insert([payload])
+        .select()
+        .single();
+
+      if (error) {
+        console.error("Supabase Insert Error:", JSON.stringify(error, null, 2));
+        console.error("Error message:", error?.message);
+        console.error("Error details:", error?.details);
+        console.error("Error hint:", error?.hint);
+        console.error("Error code:", error?.code);
+      } else {
+        console.log('Successfully inserted patient_cases row:', insertData);
+        if (insertData?.id) {
+          useEmergencyStore.getState().setCaseId(insertData.id);
+        }
+      }
+    } catch (err) {
+      console.error('Unexpected error inserting to Supabase:', err);
+    }
+
     router.push('/emergency-description');
   };
   return (

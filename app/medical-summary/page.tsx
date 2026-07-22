@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useEmergencyStore } from '../../store/useEmergencyStore';
 import PageTransition from '../../components/layout/PageTransition';
 import dynamic from 'next/dynamic';
+import { supabase } from '../../lib/supabaseClient';
 
 const PDFButton = dynamic(
   () => import('../../components/reports/PDFButton'),
@@ -13,8 +14,37 @@ const PDFButton = dynamic(
 
 export default function MedicalSummaryPage() {
   const router = useRouter();
-  const { patientDetails, aiResults, emergencyDescription } = useEmergencyStore();
+  const { patientDetails, aiResults, emergencyDescription, caseId } = useEmergencyStore();
   const [isClient, setIsClient] = useState(false);
+  const [feedback, setFeedback] = useState('');
+  const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
+
+  const submitFeedback = async (rating: 'positive' | 'negative') => {
+    if (!caseId) return;
+    try {
+      const payload = {
+        patient_case_id: caseId,
+        rating: rating,
+        feedback: feedback
+      };
+      console.log("Inserting payload into feedback:", payload);
+
+      const { error } = await supabase.from('feedback').insert([payload]);
+      
+      if (error) {
+        console.error("Supabase Insert Error (feedback):", JSON.stringify(error, null, 2));
+        console.error("Error message:", error?.message);
+        console.error("Error details:", error?.details);
+        console.error("Error hint:", error?.hint);
+        console.error("Error code:", error?.code);
+      } else {
+        console.log('Successfully inserted feedback row.');
+        setFeedbackSubmitted(true);
+      }
+    } catch (err: any) {
+      console.error('Unexpected error inserting into feedback:', err?.message || err);
+    }
+  };
 
   useEffect(() => {
     setIsClient(true);
@@ -104,6 +134,41 @@ export default function MedicalSummaryPage() {
             </div>
           </section>
           
+          <section>
+            <h3 className="font-[family-name:var(--font-label-lg)] text-[length:var(--font-label-lg)] text-[var(--color-primary)] mb-4 flex items-center gap-2 font-bold tracking-wide">
+              <span className="material-symbols-outlined text-[20px]">feedback</span> Provide Feedback
+            </h3>
+            <div className="bg-[var(--color-surface-container-lowest)] p-4 rounded-2xl border border-[var(--color-outline-variant)]/30 shadow-sm flex flex-col gap-4">
+              {!feedbackSubmitted ? (
+                <>
+                  <textarea 
+                    value={feedback} 
+                    onChange={(e) => setFeedback(e.target.value)} 
+                    placeholder="Any comments on the AI guidance?" 
+                    className="w-full bg-[var(--color-surface-bright)] border border-[var(--color-outline-variant)] rounded-xl p-3 text-[var(--color-on-surface)] focus:ring-1 focus:ring-[var(--color-primary)] focus:outline-none"
+                    rows={2}
+                  />
+                  <div className="flex gap-4">
+                    <button 
+                      onClick={() => submitFeedback('positive')} 
+                      className="flex-1 flex items-center justify-center gap-2 h-10 rounded-xl bg-[var(--color-surface-container)] hover:bg-[var(--color-surface-container-high)] border border-[var(--color-outline-variant)]"
+                    >
+                      <span className="material-symbols-outlined text-green-600">thumb_up</span> Helpful
+                    </button>
+                    <button 
+                      onClick={() => submitFeedback('negative')} 
+                      className="flex-1 flex items-center justify-center gap-2 h-10 rounded-xl bg-[var(--color-surface-container)] hover:bg-[var(--color-surface-container-high)] border border-[var(--color-outline-variant)]"
+                    >
+                      <span className="material-symbols-outlined text-red-600">thumb_down</span> Not Helpful
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <p className="text-[var(--color-primary)] font-medium text-center">Thank you for your feedback!</p>
+              )}
+            </div>
+          </section>
+
           <div className="pt-6 border-t border-[var(--color-outline-variant)]/50">
             <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
               <button className="w-full sm:w-auto flex-1 h-[56px] flex items-center justify-center gap-2 bg-[var(--color-primary)] text-[var(--color-on-primary)] rounded-2xl font-[family-name:var(--font-label-lg)] text-[length:var(--font-label-lg)] hover:bg-[var(--color-primary-container)] hover:text-[var(--color-on-primary-container)] transition-colors shadow-sm font-bold tracking-wide">

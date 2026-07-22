@@ -23,6 +23,11 @@ export interface AIAnalysisResult {
 }
 
 interface EmergencyState {
+  sessionId: string | null;
+  caseId: string | null;
+  setSessionId: (id: string) => void;
+  setCaseId: (id: string) => void;
+
   patientDetails: PatientDetails;
   setPatientDetails: (details: Partial<PatientDetails>) => void;
   
@@ -49,6 +54,11 @@ const initialPatientDetails: PatientDetails = {
 export const useEmergencyStore = create<EmergencyState>()(
   persist(
     (set) => ({
+      sessionId: null,
+      caseId: null,
+      setSessionId: (id) => set({ sessionId: id }),
+      setCaseId: (id) => set({ caseId: id }),
+
       patientDetails: initialPatientDetails,
       setPatientDetails: (details) => 
         set((state) => ({ 
@@ -62,6 +72,8 @@ export const useEmergencyStore = create<EmergencyState>()(
       setAiResults: (results) => set({ aiResults: results }),
       
       resetEmergency: () => set({ 
+        sessionId: null,
+        caseId: null,
         patientDetails: initialPatientDetails, 
         emergencyDescription: '', 
         aiResults: null 

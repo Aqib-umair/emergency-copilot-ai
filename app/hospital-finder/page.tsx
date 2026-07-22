@@ -3,6 +3,8 @@
 import React, { useState } from 'react';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
+import { supabase } from '../../lib/supabaseClient';
+import { useEmergencyStore } from '../../store/useEmergencyStore';
 
 const HospitalMap = dynamic(() => import('../../components/maps/HospitalMap'), {
   ssr: false,
@@ -12,13 +14,48 @@ const HospitalMap = dynamic(() => import('../../components/maps/HospitalMap'), {
 export default function HospitalFinderPage() {
   const router = useRouter();
   const [hospitals, setHospitals] = useState<any[]>([]);
+  const caseId = useEmergencyStore((state) => state.caseId);
+
+  const handleHospitalsUpdate = async (newHospitals: any[]) => {
+    setHospitals(newHospitals);
+
+    if (caseId && newHospitals.length > 0) {
+      try {
+        const payload = newHospitals.map(h => ({
+          patient_case_id: caseId,
+          hospital_name: h.name,
+          latitude: h.geometry?.location?.lat || 0,
+          longitude: h.geometry?.location?.lng || 0,
+          distance: h.distance || null
+        }));
+        
+        console.log("Inserting payload into hospital_searches:", payload);
+
+        const { error } = await supabase
+          .from('hospital_searches')
+          .insert(payload);
+        
+        if (error) {
+          console.error("Supabase Insert Error (hospital_searches):", JSON.stringify(error, null, 2));
+          console.error("Error message:", error?.message);
+          console.error("Error details:", error?.details);
+          console.error("Error hint:", error?.hint);
+          console.error("Error code:", error?.code);
+        } else {
+          console.log(`Successfully inserted ${payload.length} hospital_searches rows.`);
+        }
+      } catch (err: any) {
+        console.error('Unexpected error inserting into hospital_searches:', err?.message || err);
+      }
+    }
+  };
 
   return (
     <main className="flex-1 relative w-full h-screen overflow-hidden flex flex-col md:max-w-[428px] md:mx-auto md:border-x md:border-[var(--color-outline-variant)] md:shadow-lg pt-[var(--spacing-touch-target-min)]">
       
       {/* Map Canvas (Full screen underneath) */}
       <div className="absolute inset-0 z-0">
-        <HospitalMap onHospitalsUpdate={setHospitals} />
+        <HospitalMap onHospitalsUpdate={handleHospitalsUpdate} />
       </div>
 
       {/* Search & Filters Overlay */}

@@ -47,12 +47,14 @@ export default function AiAnalysisLoadingPage() {
     // API Call
     const analyzeEmergency = async () => {
       try {
+        const caseId = useEmergencyStore.getState().caseId;
         const response = await fetch('/api/analyze', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             patientDetails,
             emergencyDescription,
+            caseId,
             language: 'en' // Get from i18n in real implementation
           }),
         });

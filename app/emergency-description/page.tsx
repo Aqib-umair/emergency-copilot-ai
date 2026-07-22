@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useEmergencyStore } from '../../store/useEmergencyStore';
 import PageTransition from '../../components/layout/PageTransition';
+import { supabase } from '../../lib/supabaseClient';
 
 const suggestedSymptoms = [
   'Chest Pain', 'Breathing Problem', 'High Fever', 'Bleeding',
@@ -75,8 +76,27 @@ export default function EmergencyDescriptionPage() {
     setText(newText);
   };
 
-  const handleAnalyze = () => {
+  const handleAnalyze = async () => {
     setEmergencyDescription(text);
+    
+    const caseId = useEmergencyStore.getState().caseId;
+    if (caseId) {
+      try {
+        const { error } = await supabase
+          .from('patient_cases')
+          .update({ emergency_description: text })
+          .eq('id', caseId);
+          
+        if (error) {
+          console.error('Supabase Update Error (emergency_description):', error);
+        } else {
+          console.log('Successfully updated patient_cases with emergency_description');
+        }
+      } catch (err) {
+        console.error('Unexpected error updating Supabase:', err);
+      }
+    }
+    
     router.push('/ai-analysis');
   };
   return (

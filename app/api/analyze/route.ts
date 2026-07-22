@@ -1,12 +1,10 @@
 import { NextResponse } from 'next/server';
-import { GoogleGenAI } from '@google/genai';
-
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
+import { supabase } from '../../../lib/supabaseClient';
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { patientDetails, emergencyDescription, language } = body;
+    const { patientDetails, emergencyDescription, language, caseId } = body;
 
     const prompt = `
       You are an AI Emergency Assistant. Your role is to analyze the emergency description and provide guidance.
@@ -45,15 +43,29 @@ export async function POST(req: Request) {
       Respond ONLY with the JSON object. Do not include markdown code blocks. Ensure all text is translated to the requested language (except JSON keys and urgencyLevel values which must remain as specified).
     `;
 
-    const response = await ai.models.generateContent({
-      model: 'gemini-flash-lite-latest',
-      contents: prompt,
-      config: {
-        responseMimeType: 'application/json',
-      }
+    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent`;
+    const response = await fetch(geminiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-goog-api-key': process.env.GEMINI_API_KEY || ''
+      },
+      body: JSON.stringify({
+        contents: [{ role: 'user', parts: [{ text: prompt }] }],
+        generationConfig: {
+          responseMimeType: 'application/json'
+        }
+      })
     });
 
-    let jsonResponse = response.text || '';
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Gemini API Error:', errorText);
+      throw new Error(`Gemini API failed with status: ${response.status}`);
+    }
+
+    const responseData = await response.json();
+    let jsonResponse = responseData.candidates?.[0]?.content?.parts?.[0]?.text || '';
     
     // In case there are markdown tags despite the prompt and mimeType
     if (jsonResponse.startsWith('```json')) {
@@ -69,6 +81,33 @@ export async function POST(req: Request) {
         { success: false, message: 'Invalid AI response', error: 'Could not parse JSON from AI' },
         { status: 500 }
       );
+    }
+
+    if (caseId) {
+      try {
+        const payload = {
+          patient_case_id: caseId,
+          urgency_level: parsedData.urgencyLevel,
+          confidence_score: parsedData.confidenceScore || null
+        };
+        console.log("Inserting payload into emergency_reports:", payload);
+
+        const { error: insertError } = await supabase
+          .from('emergency_reports')
+          .insert([payload]);
+          
+        if (insertError) {
+          console.error("Supabase Insert Error (emergency_reports):", JSON.stringify(insertError, null, 2));
+          console.error("Error message:", insertError?.message);
+          console.error("Error details:", insertError?.details);
+          console.error("Error hint:", insertError?.hint);
+          console.error("Error code:", insertError?.code);
+        } else {
+          console.log('Successfully inserted emergency_reports row.');
+        }
+      } catch (err: any) {
+        console.error('Unexpected error inserting into emergency_reports:', err?.message || err);
+      }
     }
 
     return NextResponse.json(parsedData);
