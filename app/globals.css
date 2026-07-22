@@ -1,0 +1,127 @@
+@import "tailwindcss";
+
+@theme {
+  --color-tertiary: #611e00;
+  --color-on-surface-variant: #444653;
+  --color-tertiary-fixed-dim: #ffb59a;
+  --color-on-tertiary-fixed: #380d00;
+  --color-on-error: #ffffff;
+  --color-inverse-surface: #213145;
+  --color-secondary-fixed-dim: #4edea3;
+  --color-secondary-fixed: #6ffbbe;
+  --color-primary-fixed-dim: #b8c4ff;
+  --color-surface-container: #e5eeff;
+  --color-on-secondary-fixed: #002113;
+  --color-error-container: #ffdad6;
+  --color-tertiary-fixed: #ffdbce;
+  --color-primary: #00288e;
+  --color-surface-container-high: #dce9ff;
+  --color-secondary: #006c49;
+  --color-surface-bright: #f8f9ff;
+  --color-on-primary-container: #a8b8ff;
+  --color-on-surface: #0b1c30;
+  --color-primary-container: #1e40af;
+  --color-on-primary: #ffffff;
+  --color-primary-fixed: #dde1ff;
+  --color-surface-container-highest: #d3e4fe;
+  --color-surface-dim: #cbdbf5;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #eff4ff;
+  --color-outline: #757684;
+  --color-on-secondary: #ffffff;
+  --color-on-secondary-container: #00714d;
+  --color-on-secondary-fixed-variant: #005236;
+  --color-on-tertiary-fixed-variant: #802a00;
+  --color-on-tertiary-container: #ffa583;
+  --color-on-tertiary: #ffffff;
+  --color-on-error-container: #93000a;
+  --color-background: #f8f9ff;
+  --color-tertiary-container: #872d00;
+  --color-inverse-primary: #b8c4ff;
+  --color-surface: #f8f9ff;
+  --color-on-primary-fixed-variant: #173bab;
+  --color-on-primary-fixed: #001453;
+  --color-surface-tint: #3755c3;
+  --color-outline-variant: #c4c5d5;
+  --color-error: #ba1a1a;
+  --color-surface-variant: #d3e4fe;
+  --color-inverse-on-surface: #eaf1ff;
+  --color-on-background: #0b1c30;
+  --color-secondary-container: #6cf8bb;
+
+  --spacing-touch-target-min: 48px;
+  --spacing-stack-md: 1rem;
+  --spacing-margin-desktop: 2rem;
+  --spacing-stack-sm: 0.5rem;
+  --spacing-gutter: 1rem;
+  --spacing-stack-lg: 2rem;
+  --spacing-margin-mobile: 1rem;
+  
+  --font-label-lg: var(--font-inter);
+  --font-headline-xl: var(--font-inter);
+  --font-headline-lg: var(--font-inter);
+  --font-headline-lg-mobile: var(--font-inter);
+  --font-headline-md: var(--font-inter);
+  --font-body-lg: var(--font-inter);
+  --font-label-md: var(--font-inter);
+  --font-body-md: var(--font-inter);
+  
+  --animate-breathe-pulse: breathe-pulse 3s infinite ease-in-out;
+  --animate-pulse-ring: pulse-ring 3s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
+  --animate-clinical-pulse: clinical-pulse 2s infinite cubic-bezier(0.4, 0, 0.2, 1);
+  --animate-float-sparkle: float-sparkle 3s infinite ease-in-out;
+  --animate-ring-expand: ring-expand 3s infinite cubic-bezier(0.0, 0.0, 0.2, 1);
+
+  @keyframes breathe-pulse {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 40, 142, 0.4); }
+    50% { transform: scale(1.05); box-shadow: 0 0 40px 20px rgba(0, 40, 142, 0.2); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 40, 142, 0); }
+  }
+
+  @keyframes pulse-ring {
+    0% { transform: scale(0.8); opacity: 0.8; }
+    100% { transform: scale(1.5); opacity: 0; }
+  }
+
+  @keyframes clinical-pulse {
+    0% { transform: scale(0.95); opacity: 0.8; box-shadow: 0 0 0 0 rgba(0, 40, 142, 0.2); }
+    50% { transform: scale(1); opacity: 1; box-shadow: 0 0 0 20px rgba(0, 40, 142, 0); }
+    100% { transform: scale(0.95); opacity: 0.8; box-shadow: 0 0 0 0 rgba(0, 40, 142, 0); }
+  }
+
+  @keyframes float-sparkle {
+    0%, 100% { transform: translateY(0px) rotate(0deg) scale(1); }
+    50% { transform: translateY(-8px) rotate(15deg) scale(1.1); }
+  }
+
+  @keyframes ring-expand {
+    0% { transform: scale(0.5); opacity: 1; }
+    100% { transform: scale(2); opacity: 0; }
+  }
+}
+
+@layer base {
+  body {
+    background-color: var(--color-background);
+    color: var(--color-on-background);
+    -webkit-font-smoothing: antialiased;
+    min-height: max(884px, 100dvh);
+  }
+
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  }
+}
+
+.btn-breathe {
+  animation: var(--animate-breathe-pulse);
+}
+
+.ripple-bg {
+  position: absolute;
+  inset: -20px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(220,233,255,1) 0%, rgba(220,233,255,0) 70%);
+  z-index: 0;
+  animation: var(--animate-pulse-ring);
+}

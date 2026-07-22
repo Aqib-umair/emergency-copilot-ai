@@ -1,0 +1,11 @@
+{
+  "app": {
+    "title": "Emergency Copilot AI",
+    "subtitle": "Help in Seconds, Not Minutes"
+  },
+  "home": {
+    "helpButton": "HELP",
+    "instruction1": "Press the button for immediate AI-guided assistance.",
+    "instruction2": "In case of severe bleeding, unconsciousness, or chest pain, call emergency services (112 / 911) immediately."
+  }
+}

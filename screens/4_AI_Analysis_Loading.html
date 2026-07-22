@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Emergency Copilot AI - Loading</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Design System Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary": "#611e00",
+                        "on-surface-variant": "#444653",
+                        "tertiary-fixed-dim": "#ffb59a",
+                        "on-tertiary-fixed": "#380d00",
+                        "on-error": "#ffffff",
+                        "inverse-surface": "#213145",
+                        "secondary-fixed-dim": "#4edea3",
+                        "secondary-fixed": "#6ffbbe",
+                        "primary-fixed-dim": "#b8c4ff",
+                        "surface-container": "#e5eeff",
+                        "on-secondary-fixed": "#002113",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed": "#ffdbce",
+                        "primary": "#00288e",
+                        "surface-container-high": "#dce9ff",
+                        "secondary": "#006c49",
+                        "surface-bright": "#f8f9ff",
+                        "on-primary-container": "#a8b8ff",
+                        "on-surface": "#0b1c30",
+                        "primary-container": "#1e40af",
+                        "on-primary": "#ffffff",
+                        "primary-fixed": "#dde1ff",
+                        "surface-container-highest": "#d3e4fe",
+                        "surface-dim": "#cbdbf5",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-low": "#eff4ff",
+                        "outline": "#757684",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-container": "#00714d",
+                        "on-secondary-fixed-variant": "#005236",
+                        "on-tertiary-fixed-variant": "#802a00",
+                        "on-tertiary-container": "#ffa583",
+                        "on-tertiary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "background": "#f8f9ff",
+                        "tertiary-container": "#872d00",
+                        "inverse-primary": "#b8c4ff",
+                        "surface": "#f8f9ff",
+                        "on-primary-fixed-variant": "#173bab",
+                        "on-primary-fixed": "#001453",
+                        "surface-tint": "#3755c3",
+                        "outline-variant": "#c4c5d5",
+                        "error": "#ba1a1a",
+                        "surface-variant": "#d3e4fe",
+                        "inverse-on-surface": "#eaf1ff",
+                        "on-background": "#0b1c30",
+                        "secondary-container": "#6cf8bb"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "touch-target-min": "48px",
+                        "stack-md": "1rem",
+                        "margin-desktop": "2rem",
+                        "stack-sm": "0.5rem",
+                        "gutter": "1rem",
+                        "stack-lg": "2rem",
+                        "margin-mobile": "1rem"
+                    },
+                    "fontFamily": {
+                        "label-lg": ["Inter"],
+                        "headline-xl": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-lg": ["16px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "headline-xl": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "34px", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "fontWeight": "500" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        /* Custom Animations for Clinical Calm */
+        @keyframes clinical-pulse {
+            0% { transform: scale(0.95); opacity: 0.8; box-shadow: 0 0 0 0 rgba(0, 40, 142, 0.2); }
+            50% { transform: scale(1); opacity: 1; box-shadow: 0 0 0 20px rgba(0, 40, 142, 0); }
+            100% { transform: scale(0.95); opacity: 0.8; box-shadow: 0 0 0 0 rgba(0, 40, 142, 0); }
+        }
+        .animate-clinical-pulse {
+            animation: clinical-pulse 2s infinite cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes float-sparkle {
+            0%, 100% { transform: translateY(0px) rotate(0deg) scale(1); }
+            50% { transform: translateY(-8px) rotate(15deg) scale(1.1); }
+        }
+        .animate-float-sparkle {
+            animation: float-sparkle 3s infinite ease-in-out;
+        }
+
+        @keyframes ring-expand {
+            0% { transform: scale(0.5); opacity: 1; }
+            100% { transform: scale(2); opacity: 0; }
+        }
+        .animate-ring {
+            animation: ring-expand 3s infinite cubic-bezier(0.0, 0.0, 0.2, 1);
+        }
+        .delay-1000 { animation-delay: 1s; }
+        .delay-2000 { animation-delay: 2s; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<!-- 
+    SHELL LOGIC IMPLEMENTATION:
+    Navigation Shell (TopAppBar, BottomNavBar) is explicitly SUPPRESSED here.
+    Rule: "Linear/Transactional: Login, Sign-up, Onboarding, Checkout, or "Success/Confirmation" splash screens."
+    This is a loading/transitional screen, requiring total user focus on the system state.
+-->
+<body class="bg-surface min-h-screen flex flex-col items-center justify-center relative overflow-hidden antialiased">
+<!-- Ambient Background Lighting -->
+<div class="absolute inset-0 z-0 pointer-events-none" style="background: radial-gradient(circle at 50% 40%, rgba(220, 233, 255, 0.4) 0%, rgba(248, 249, 255, 0) 70%);"></div>
+<!-- Main Content Container -->
+<main class="z-10 w-full max-w-md px-margin-mobile md:px-margin-desktop flex flex-col items-center justify-center text-center">
+<!-- Animation Cluster -->
+<div class="relative w-40 h-40 mb-stack-lg flex items-center justify-center">
+<!-- Expanding Ambient Rings (Radar/Search metaphor) -->
+<div class="absolute inset-0 rounded-full border border-primary-fixed animate-ring"></div>
+<div class="absolute inset-0 rounded-full border border-primary-fixed animate-ring delay-1000"></div>
+<div class="absolute inset-0 rounded-full border border-primary-fixed animate-ring delay-2000"></div>
+<!-- Central Hub (Heartbeat) -->
+<div class="relative z-10 w-24 h-24 bg-primary-fixed rounded-full flex items-center justify-center animate-clinical-pulse shadow-sm border border-white">
+<div class="w-16 h-16 bg-primary-container rounded-full flex items-center justify-center shadow-inner">
+<span class="material-symbols-outlined text-[36px] text-white" style="font-variation-settings: 'FILL' 1;">
+                        monitor_heart
+                    </span>
+</div>
+</div>
+<!-- Orbiting AI Indicator -->
+<div class="absolute top-0 right-0 z-20 animate-float-sparkle">
+<div class="bg-surface rounded-full p-2 shadow-md border border-surface-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px] text-primary" style="font-variation-settings: 'FILL' 1;">info_spark</span>
+</div>
+</div>
+</div>
+<!-- Typography & Sequential Messaging -->
+<div class="flex flex-col items-center min-h-[96px] w-full">
+<h1 class="font-headline-md text-headline-md md:font-headline-lg text-headline-lg text-on-surface mb-stack-sm transition-opacity duration-500 opacity-100" id="loading-message">
+                Analyzing symptoms...
+            </h1>
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px] animate-spin">
+                    progress_activity
+                </span>
+<p class="font-body-md text-body-md">
+                    Please do not close this app
+                </p>
+</div>
+</div>
+<!-- Structured Progress Indicator -->
+<div class="w-full max-w-[240px] mt-stack-lg">
+<div class="h-1.5 w-full bg-surface-variant rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full transition-all duration-[200ms] ease-linear" id="progress-bar" style="width: 5%;"></div>
+</div>
+</div>
+</main>
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const messages = [
+                'Analyzing symptoms...',
+                'Assessing urgency...',
+                'Preparing guidance...',
+                'Finding nearby hospitals...'
+            ];
+            
+            const messageElement = document.getElementById('loading-message');
+            const progressBar = document.getElementById('progress-bar');
+            
+            let currentMessageIndex = 0;
+            const totalDuration = 10000; // 10 seconds total simulation
+            const messageIntervalTime = totalDuration / messages.length;
+            
+            // Handle Message Cycling
+            const messageInterval = setInterval(() => {
+                // Fade out
+                messageElement.style.opacity = '0';
+                
+                setTimeout(() => {
+                    currentMessageIndex++;
+                    if (currentMessageIndex < messages.length) {
+                        messageElement.textContent = messages[currentMessageIndex];
+                        // Fade in
+                        messageElement.style.opacity = '1';
+                    } else {
+                        // Keep last message visible and clear interval
+                        clearInterval(messageInterval);
+                        messageElement.style.opacity = '1';
+                    }
+                }, 500); // Wait for transition duration
+            }, messageIntervalTime);
+
+            // Handle Progress Bar
+            let progress = 5;
+            const updateRate = 100; // ms
+            const progressStep = (95 / (totalDuration / updateRate));
+            
+            const progressInterval = setInterval(() => {
+                progress += progressStep;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(progressInterval);
+                    
+                    // Optional: Trigger a redirect or change state here in a real app
+                    // setTimeout(() => { alert('Analysis Complete'); }, 500);
+                }
+                progressBar.style.width = `${progress}%`;
+            }, updateRate);
+        });
+    </script>
+</body></html>

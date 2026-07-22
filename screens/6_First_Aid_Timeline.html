@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Emergency Copilot AI - Guidance</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "tertiary": "#611e00",
+                      "on-surface-variant": "#444653",
+                      "tertiary-fixed-dim": "#ffb59a",
+                      "on-tertiary-fixed": "#380d00",
+                      "on-error": "#ffffff",
+                      "inverse-surface": "#213145",
+                      "secondary-fixed-dim": "#4edea3",
+                      "secondary-fixed": "#6ffbbe",
+                      "primary-fixed-dim": "#b8c4ff",
+                      "surface-container": "#e5eeff",
+                      "on-secondary-fixed": "#002113",
+                      "error-container": "#ffdad6",
+                      "tertiary-fixed": "#ffdbce",
+                      "primary": "#00288e",
+                      "surface-container-high": "#dce9ff",
+                      "secondary": "#006c49",
+                      "surface-bright": "#f8f9ff",
+                      "on-primary-container": "#a8b8ff",
+                      "on-surface": "#0b1c30",
+                      "primary-container": "#1e40af",
+                      "on-primary": "#ffffff",
+                      "primary-fixed": "#dde1ff",
+                      "surface-container-highest": "#d3e4fe",
+                      "surface-dim": "#cbdbf5",
+                      "surface-container-lowest": "#ffffff",
+                      "surface-container-low": "#eff4ff",
+                      "outline": "#757684",
+                      "on-secondary": "#ffffff",
+                      "on-secondary-container": "#00714d",
+                      "on-secondary-fixed-variant": "#005236",
+                      "on-tertiary-fixed-variant": "#802a00",
+                      "on-tertiary-container": "#ffa583",
+                      "on-tertiary": "#ffffff",
+                      "on-error-container": "#93000a",
+                      "background": "#f8f9ff",
+                      "tertiary-container": "#872d00",
+                      "inverse-primary": "#b8c4ff",
+                      "surface": "#f8f9ff",
+                      "on-primary-fixed-variant": "#173bab",
+                      "on-primary-fixed": "#001453",
+                      "surface-tint": "#3755c3",
+                      "outline-variant": "#c4c5d5",
+                      "error": "#ba1a1a",
+                      "surface-variant": "#d3e4fe",
+                      "inverse-on-surface": "#eaf1ff",
+                      "on-background": "#0b1c30",
+                      "secondary-container": "#6cf8bb"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "touch-target-min": "48px",
+                      "stack-md": "1rem",
+                      "margin-desktop": "2rem",
+                      "stack-sm": "0.5rem",
+                      "gutter": "1rem",
+                      "stack-lg": "2rem",
+                      "margin-mobile": "1rem"
+              },
+              "fontFamily": {
+                      "label-lg": ["Inter"],
+                      "headline-xl": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "headline-lg-mobile": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "label-md": ["Inter"],
+                      "body-md": ["Inter"]
+              },
+              "fontSize": {
+                      "label-lg": ["16px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                      "headline-xl": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                      "headline-lg-mobile": ["28px", {"lineHeight": "34px", "fontWeight": "700"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "label-md": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .icon-filled {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        /* Timeline Pulse Animation */
+        @keyframes subtlePulse {
+            0% { box-shadow: 0 0 0 0 rgba(0, 40, 142, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(0, 40, 142, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 40, 142, 0); }
+        }
+        .timeline-pulse {
+            animation: subtlePulse 2s infinite;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md antialiased min-h-screen flex flex-col">
+<!-- TopAppBar (From JSON) -->
+<nav class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-mobile h-touch-target-min bg-surface border-b border-outline-variant shadow-sm transition-transform duration-150">
+<span aria-hidden="true" class="material-symbols-outlined text-primary font-headline-md text-headline-md">language</span>
+<span class="font-headline-md text-headline-md font-bold text-primary tracking-tight">Emergency Copilot AI</span>
+<span aria-hidden="true" class="material-symbols-outlined text-primary font-headline-md text-headline-md">account_circle</span>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-grow pt-[calc(48px+2rem)] pb-[140px] px-margin-mobile md:px-margin-desktop max-w-[1200px] w-full mx-auto">
+<!-- Header Context -->
+<header class="mb-stack-lg">
+<div class="inline-flex items-center gap-2 bg-error-container text-on-error-container px-3 py-1 rounded-full mb-stack-sm">
+<span class="material-symbols-outlined icon-filled text-[16px]">warning</span>
+<span class="font-label-md text-label-md">High Priority Scenario</span>
+</div>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg text-on-surface">First-Aid Guidance</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant mt-stack-sm max-w-2xl">Follow these immediate steps carefully to stabilize the patient while awaiting professional medical assistance.</p>
+</header>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-stack-lg">
+<!-- Section 1: Numbered First-Aid Cards (Bento Layout) -->
+<section aria-label="First-Aid Steps" class="lg:col-span-8 flex flex-col gap-stack-md">
+<h2 class="sr-only">Step-by-Step Instructions</h2>
+<!-- Step 1: Critical (Large Card) -->
+<div class="bg-surface-container-lowest border-l-4 border-l-primary border-y border-r border-outline-variant rounded-r-xl shadow-sm p-stack-md md:p-stack-lg relative overflow-hidden group">
+<div class="absolute top-0 right-0 w-48 h-full bg-gradient-to-l from-surface-container-low to-transparent opacity-50 pointer-events-none"></div>
+<div class="flex gap-stack-md relative z-10">
+<div class="w-12 h-12 rounded-full bg-primary text-on-primary flex items-center justify-center font-headline-md text-headline-md font-bold shrink-0 shadow-md">1</div>
+<div class="flex-grow">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-stack-sm">Ensure clear airway</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Gently tilt the head back and lift the chin to open the airway. Remove any visible obstructions from the mouth if it is safe to do so.</p>
+<!-- Visual Aid / Illustration Placeholder -->
+<div class="mt-stack-md h-32 w-full rounded-lg bg-surface-variant overflow-hidden relative" data-alt="A clean, minimalist medical illustration showing a stylized human profile indicating the correct head-tilt and chin-lift maneuver to open an airway. Rendered in a professional corporate modern aesthetic with soft blues and crisp whites, emphasizing clarity and calm guidance." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAQPBVzv0dkc1iLTUui7FlGNtg2wyDtEwk7W-qHOWfBp6ejAP_e9y6EzmsO-ENuTCKoElJvHPJMDhxF9wd5fdAk9yDN-I1nkbaXAiBbXLDDMuEYLWBLz6X_oXOlFd7AiEHJQZgUhlhgEs8bWWb1oWaI55_1kfB357oFBHXjuN_99dHpPnbYriScDd21ARy3JBnZcAc9X39oULT3my0rD55_X2hAR45HZL8nGEVjNlpLJYG8RrxluhGvF2YKnFn7ETU57YmpZOoc5N8')">
+<div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+<span class="absolute bottom-2 left-3 font-label-md text-label-md text-white flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">visibility</span> View technique
+                                </span>
+</div>
+</div>
+</div>
+</div>
+<!-- Bento Grid for Subsequent Steps -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-stack-md">
+<!-- Step 2 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-stack-md shadow-sm hover:shadow-md transition-shadow">
+<div class="flex items-start gap-stack-sm">
+<div class="w-8 h-8 rounded-full bg-surface-variant text-on-surface flex items-center justify-center font-label-lg text-label-lg font-bold shrink-0">2</div>
+<div>
+<h3 class="font-label-lg text-label-lg text-on-surface mb-1">Check breathing</h3>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm">Listen for breath sounds and watch for chest movement for no more than 10 seconds.</p>
+</div>
+</div>
+</div>
+<!-- Step 3 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-stack-md shadow-sm hover:shadow-md transition-shadow">
+<div class="flex items-start gap-stack-sm">
+<div class="w-8 h-8 rounded-full bg-surface-variant text-on-surface flex items-center justify-center font-label-lg text-label-lg font-bold shrink-0">3</div>
+<div>
+<h3 class="font-label-lg text-label-lg text-on-surface mb-1">Keep patient calm</h3>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm">Speak in a steady, reassuring tone. Do not move them unless absolutely necessary.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 2: Animated Timeline -->
+<section aria-label="Progress Timeline" class="lg:col-span-4">
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-stack-md md:p-stack-lg shadow-sm h-full">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-stack-lg flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">schedule</span> Action Timeline
+                    </h3>
+<div class="relative pl-[14px]">
+<!-- Vertical Track -->
+<div class="absolute left-[19px] top-[24px] bottom-[24px] w-[2px] bg-outline-variant rounded-full z-0"></div>
+<!-- Timeline Item: NOW (Active) -->
+<div class="relative z-10 flex gap-stack-md mb-stack-lg">
+<div class="w-4 h-4 rounded-full bg-primary border-4 border-surface-container-lowest flex items-center justify-center mt-[4px] timeline-pulse shrink-0 relative -left-[3px]"></div>
+<div class="bg-primary-container text-on-primary-container p-stack-sm px-stack-md rounded-lg w-full shadow-sm">
+<h4 class="font-label-lg text-label-lg font-bold">NOW</h4>
+<p class="font-body-md text-body-md text-sm mt-1 opacity-90">Securing airway and assessing.</p>
+</div>
+</div>
+<!-- Timeline Item: Next 2 Mins -->
+<div class="relative z-10 flex gap-stack-md mb-stack-lg opacity-70">
+<div class="w-3 h-3 rounded-full bg-outline border-2 border-surface-container-lowest mt-[6px] shrink-0 relative -left-[1.5px]"></div>
+<div>
+<h4 class="font-label-lg text-label-lg text-on-surface">Next 2 Minutes</h4>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm mt-1">Begin CPR if unresponsive.</p>
+</div>
+</div>
+<!-- Timeline Item: Next 5 Mins -->
+<div class="relative z-10 flex gap-stack-md mb-stack-lg opacity-50">
+<div class="w-3 h-3 rounded-full bg-outline border-2 border-surface-container-lowest mt-[6px] shrink-0 relative -left-[1.5px]"></div>
+<div>
+<h4 class="font-label-lg text-label-lg text-on-surface">Next 5 Minutes</h4>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm mt-1">Locate and deploy nearest AED.</p>
+</div>
+</div>
+<!-- Timeline Item: Until Help -->
+<div class="relative z-10 flex gap-stack-md opacity-40">
+<div class="w-3 h-3 rounded-full bg-outline border-2 border-surface-container-lowest mt-[6px] shrink-0 relative -left-[1.5px]"></div>
+<div>
+<h4 class="font-label-lg text-label-lg text-on-surface">Until Help Arrives</h4>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm mt-1">Continue monitoring vitals.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- Custom Sticky Bottom Action Bar -->
+<!-- Suppressing standard BottomNavBar as this is a focused, linear emergency task view -->
+<footer class="fixed bottom-0 left-0 w-full z-50 bg-surface shadow-[0_-4px_16px_rgba(0,0,0,0.08)] border-t border-outline-variant p-stack-sm md:px-margin-desktop md:py-stack-md transition-transform">
+<div class="max-w-[1200px] mx-auto flex flex-col md:flex-row-reverse gap-stack-sm justify-between items-center">
+<!-- Primary Critical Action -->
+<button class="w-full md:w-auto h-touch-target-min px-stack-lg bg-error text-on-error rounded-xl font-label-lg text-label-lg flex items-center justify-center gap-2 hover:bg-on-error-container transition-colors shadow-sm">
+<span class="material-symbols-outlined icon-filled">call</span>
+                Call 911
+            </button>
+<!-- Secondary Actions Container -->
+<div class="flex gap-stack-sm w-full md:w-auto">
+<button class="flex-1 md:flex-none h-touch-target-min px-stack-md bg-surface-container-lowest border-2 border-outline-variant text-on-surface rounded-xl font-label-md text-label-md flex items-center justify-center gap-2 hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined">local_hospital</span>
+<span class="hidden sm:inline">Nearby</span> Hospitals
+                </button>
+<button class="flex-1 md:flex-none h-touch-target-min px-stack-md bg-surface-container-lowest border-2 border-outline-variant text-on-surface rounded-xl font-label-md text-label-md flex items-center justify-center gap-2 hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined">share</span>
+                    Share Report
+                </button>
+</div>
+</div>
+</footer>
+</body></html>

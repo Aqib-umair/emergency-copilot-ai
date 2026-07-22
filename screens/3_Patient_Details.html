@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Patient Details</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary": "#611e00",
+                        "on-surface-variant": "#444653",
+                        "tertiary-fixed-dim": "#ffb59a",
+                        "on-tertiary-fixed": "#380d00",
+                        "on-error": "#ffffff",
+                        "inverse-surface": "#213145",
+                        "secondary-fixed-dim": "#4edea3",
+                        "secondary-fixed": "#6ffbbe",
+                        "primary-fixed-dim": "#b8c4ff",
+                        "surface-container": "#e5eeff",
+                        "on-secondary-fixed": "#002113",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed": "#ffdbce",
+                        "primary": "#00288e",
+                        "surface-container-high": "#dce9ff",
+                        "secondary": "#006c49",
+                        "surface-bright": "#f8f9ff",
+                        "on-primary-container": "#a8b8ff",
+                        "on-surface": "#0b1c30",
+                        "primary-container": "#1e40af",
+                        "on-primary": "#ffffff",
+                        "primary-fixed": "#dde1ff",
+                        "surface-container-highest": "#d3e4fe",
+                        "surface-dim": "#cbdbf5",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-low": "#eff4ff",
+                        "outline": "#757684",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-container": "#00714d",
+                        "on-secondary-fixed-variant": "#005236",
+                        "on-tertiary-fixed-variant": "#802a00",
+                        "on-tertiary-container": "#ffa583",
+                        "on-tertiary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "background": "#f8f9ff",
+                        "tertiary-container": "#872d00",
+                        "inverse-primary": "#b8c4ff",
+                        "surface": "#f8f9ff",
+                        "on-primary-fixed-variant": "#173bab",
+                        "on-primary-fixed": "#001453",
+                        "surface-tint": "#3755c3",
+                        "outline-variant": "#c4c5d5",
+                        "error": "#ba1a1a",
+                        "surface-variant": "#d3e4fe",
+                        "inverse-on-surface": "#eaf1ff",
+                        "on-background": "#0b1c30",
+                        "secondary-container": "#6cf8bb"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "touch-target-min": "48px",
+                        "stack-md": "1rem",
+                        "margin-desktop": "2rem",
+                        "stack-sm": "0.5rem",
+                        "gutter": "1rem",
+                        "stack-lg": "2rem",
+                        "margin-mobile": "1rem"
+                    },
+                    "fontFamily": {
+                        "label-lg": ["Inter"],
+                        "headline-xl": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-lg": ["16px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "headline-xl": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "34px", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "fontWeight": "500" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9ff;
+            color: #0b1c30;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .input-ring:focus-within {
+            box-shadow: 0 0 0 2px #00288e;
+            border-color: #00288e;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen pb-32 pt-24">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-mobile h-touch-target-min bg-surface dark:bg-surface-dim border-b border-outline-variant dark:border-outline shadow-sm dark:shadow-none">
+<div class="flex items-center gap-4">
+<button class="flex items-center justify-center w-touch-target-min h-touch-target-min rounded-full hover:bg-surface-container-high dark:hover:bg-inverse-surface transition-colors">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed">arrow_back</span>
+</button>
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed">Emergency Copilot AI</h1>
+</div>
+<button class="flex items-center justify-center w-touch-target-min h-touch-target-min rounded-full hover:bg-surface-container-high dark:hover:bg-inverse-surface transition-colors">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed">account_circle</span>
+</button>
+</header>
+<main class="max-w-[800px] mx-auto px-margin-mobile md:px-margin-desktop space-y-stack-lg">
+<div class="text-center pt-stack-lg">
+<h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface">Tell us about the patient</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-stack-sm">Please provide accurate information for the AI Copilot.</p>
+</div>
+<!-- Form Card -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-6 md:p-8 shadow-[0_4px_12px_rgba(0,0,0,0.05)]">
+<form class="space-y-6">
+<!-- Patient Name -->
+<div class="flex flex-col space-y-2">
+<label class="font-label-lg text-label-lg text-on-surface" for="patientName">Patient Name</label>
+<div class="relative flex items-center bg-surface-bright border border-outline-variant rounded-lg input-ring overflow-hidden">
+<span class="material-symbols-outlined text-outline ml-4 absolute pointer-events-none">person</span>
+<input class="w-full h-[56px] bg-transparent border-none pl-12 pr-4 font-body-lg text-body-lg text-on-surface placeholder:text-outline focus:ring-0" id="patientName" placeholder="Enter full name" type="text"/>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Age -->
+<div class="flex flex-col space-y-2">
+<label class="font-label-lg text-label-lg text-on-surface" for="patientAge">Age</label>
+<div class="relative flex items-center bg-surface-bright border border-outline-variant rounded-lg input-ring overflow-hidden">
+<span class="material-symbols-outlined text-outline ml-4 absolute pointer-events-none">cake</span>
+<input class="w-full h-[56px] bg-transparent border-none pl-12 pr-4 font-body-lg text-body-lg text-on-surface placeholder:text-outline focus:ring-0" id="patientAge" placeholder="Years" type="number"/>
+</div>
+</div>
+<!-- Weight -->
+<div class="flex flex-col space-y-2">
+<label class="font-label-lg text-label-lg text-on-surface" for="patientWeight">Weight <span class="text-outline font-normal">(Optional)</span></label>
+<div class="relative flex items-center bg-surface-bright border border-outline-variant rounded-lg input-ring overflow-hidden">
+<span class="material-symbols-outlined text-outline ml-4 absolute pointer-events-none">monitor_weight</span>
+<input class="w-full h-[56px] bg-transparent border-none pl-12 pr-4 font-body-lg text-body-lg text-on-surface placeholder:text-outline focus:ring-0" id="patientWeight" placeholder="kg or lbs" type="number"/>
+</div>
+</div>
+</div>
+<!-- Gender (Segmented Control) -->
+<div class="flex flex-col space-y-2">
+<label class="font-label-lg text-label-lg text-on-surface">Gender</label>
+<div class="flex bg-surface-container rounded-lg p-1">
+<button class="flex-1 h-[48px] rounded-md font-label-lg text-label-lg bg-surface-container-lowest text-primary shadow-sm" type="button">Male</button>
+<button class="flex-1 h-[48px] rounded-md font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-high transition-colors" type="button">Female</button>
+<button class="flex-1 h-[48px] rounded-md font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-high transition-colors" type="button">Other</button>
+</div>
+</div>
+<!-- Blood Group -->
+<div class="flex flex-col space-y-2">
+<label class="font-label-lg text-label-lg text-on-surface" for="bloodGroup">Blood Group</label>
+<div class="relative flex items-center bg-surface-bright border border-outline-variant rounded-lg input-ring overflow-hidden">
+<span class="material-symbols-outlined text-outline ml-4 absolute pointer-events-none">bloodtype</span>
+<select class="w-full h-[56px] bg-transparent border-none pl-12 pr-10 font-body-lg text-body-lg text-on-surface focus:ring-0 appearance-none" id="bloodGroup">
+<option disabled="" selected="" value="">Select blood group</option>
+<option value="a+">A+</option>
+<option value="a-">A-</option>
+<option value="b+">B+</option>
+<option value="b-">B-</option>
+<option value="o+">O+</option>
+<option value="o-">O-</option>
+<option value="ab+">AB+</option>
+<option value="ab-">AB-</option>
+<option value="unknown">Unknown</option>
+</select>
+<span class="material-symbols-outlined text-outline absolute right-4 pointer-events-none">arrow_drop_down</span>
+</div>
+</div>
+<!-- Medical Conditions -->
+<div class="flex flex-col space-y-2">
+<label class="font-label-lg text-label-lg text-on-surface" for="medicalConditions">Pre-existing Medical Conditions</label>
+<div class="relative bg-surface-bright border border-outline-variant rounded-lg input-ring overflow-hidden">
+<textarea class="w-full bg-transparent border-none p-4 font-body-lg text-body-lg text-on-surface placeholder:text-outline focus:ring-0 resize-none" id="medicalConditions" placeholder="List any known conditions (e.g., Asthma, Diabetes)" rows="3"></textarea>
+</div>
+</div>
+<!-- Medications -->
+<div class="flex flex-col space-y-2">
+<label class="font-label-lg text-label-lg text-on-surface" for="medications">Current Medications</label>
+<div class="relative bg-surface-bright border border-outline-variant rounded-lg input-ring overflow-hidden">
+<textarea class="w-full bg-transparent border-none p-4 font-body-lg text-body-lg text-on-surface placeholder:text-outline focus:ring-0 resize-none" id="medications" placeholder="List active prescriptions" rows="2"></textarea>
+</div>
+</div>
+<!-- Allergies -->
+<div class="flex flex-col space-y-2">
+<label class="font-label-lg text-label-lg text-on-surface" for="allergies">Allergies</label>
+<div class="relative flex items-center bg-surface-bright border border-error-container rounded-lg input-ring overflow-hidden focus-within:border-error focus-within:ring-error">
+<span class="material-symbols-outlined text-error ml-4 absolute pointer-events-none">warning</span>
+<input class="w-full h-[56px] bg-transparent border-none pl-12 pr-4 font-body-lg text-body-lg text-on-surface placeholder:text-outline focus:ring-0" id="allergies" placeholder="e.g., Penicillin, Peanuts" type="text"/>
+</div>
+</div>
+</form>
+</div>
+</main>
+<!-- Bottom Action Area -->
+<div class="fixed bottom-0 left-0 w-full bg-surface/90 backdrop-blur-md border-t border-outline-variant p-4 md:px-margin-desktop z-40">
+<div class="max-w-[800px] mx-auto">
+<button class="w-full h-[56px] bg-primary text-on-primary font-label-lg text-label-lg rounded-[16px] shadow-sm hover:bg-primary-container transition-colors flex items-center justify-center gap-2">
+                Continue to Assessment
+                <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+</body></html>

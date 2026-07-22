@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Emergency Copilot AI - Result</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary": "#611e00",
+                        "on-surface-variant": "#444653",
+                        "tertiary-fixed-dim": "#ffb59a",
+                        "on-tertiary-fixed": "#380d00",
+                        "on-error": "#ffffff",
+                        "inverse-surface": "#213145",
+                        "secondary-fixed-dim": "#4edea3",
+                        "secondary-fixed": "#6ffbbe",
+                        "primary-fixed-dim": "#b8c4ff",
+                        "surface-container": "#e5eeff",
+                        "on-secondary-fixed": "#002113",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed": "#ffdbce",
+                        "primary": "#00288e",
+                        "surface-container-high": "#dce9ff",
+                        "secondary": "#006c49",
+                        "surface-bright": "#f8f9ff",
+                        "on-primary-container": "#a8b8ff",
+                        "on-surface": "#0b1c30",
+                        "primary-container": "#1e40af",
+                        "on-primary": "#ffffff",
+                        "primary-fixed": "#dde1ff",
+                        "surface-container-highest": "#d3e4fe",
+                        "surface-dim": "#cbdbf5",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-low": "#eff4ff",
+                        "outline": "#757684",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-container": "#00714d",
+                        "on-secondary-fixed-variant": "#005236",
+                        "on-tertiary-fixed-variant": "#802a00",
+                        "on-tertiary-container": "#ffa583",
+                        "on-tertiary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "background": "#f8f9ff",
+                        "tertiary-container": "#872d00",
+                        "inverse-primary": "#b8c4ff",
+                        "surface": "#f8f9ff",
+                        "on-primary-fixed-variant": "#173bab",
+                        "on-primary-fixed": "#001453",
+                        "surface-tint": "#3755c3",
+                        "outline-variant": "#c4c5d5",
+                        "error": "#ba1a1a",
+                        "surface-variant": "#d3e4fe",
+                        "inverse-on-surface": "#eaf1ff",
+                        "on-background": "#0b1c30",
+                        "secondary-container": "#6cf8bb"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "touch-target-min": "48px",
+                        "stack-md": "1rem",
+                        "margin-desktop": "2rem",
+                        "stack-sm": "0.5rem",
+                        "gutter": "1rem",
+                        "stack-lg": "2rem",
+                        "margin-mobile": "1rem"
+                    },
+                    "fontFamily": {
+                        "label-lg": ["Inter"],
+                        "headline-xl": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-lg": ["16px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "headline-xl": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "34px", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "fontWeight": "500" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .pulse-ring {
+            animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+        }
+        @keyframes pulse-ring {
+            0% { transform: scale(0.8); opacity: 0.5; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .icon-filled {
+            font-variation-settings: 'FILL' 1;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-body-md antialiased selection:bg-primary selection:text-on-primary pb-[140px] md:pb-[100px]">
+<!-- Navigation Shell: TopAppBar -->
+<header class="bg-surface dark:bg-surface-dim border-b border-outline-variant dark:border-outline shadow-sm dark:shadow-none fixed top-0 w-full z-50 flex justify-between items-center px-margin-mobile h-touch-target-min transition-all">
+<button aria-label="Language options" class="text-on-surface-variant hover:bg-surface-container-high transition-colors w-10 h-10 flex items-center justify-center rounded-full">
+<span class="material-symbols-outlined">language</span>
+</button>
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed tracking-tight">Emergency Copilot AI</h1>
+<button aria-label="User profile" class="text-on-surface-variant hover:bg-surface-container-high transition-colors w-10 h-10 flex items-center justify-center rounded-full">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow mt-[64px] px-margin-mobile md:px-margin-desktop py-stack-lg max-w-5xl mx-auto w-full flex flex-col gap-stack-md">
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-stack-md">
+<!-- Primary Risk Card (Full Width) -->
+<div class="col-span-1 md:col-span-12 relative overflow-hidden rounded-xl bg-error-container border border-error/20 shadow-sm p-6 flex flex-col md:flex-row items-center md:justify-between gap-stack-md text-center md:text-left transition-transform hover:shadow-md">
+<div class="absolute top-0 right-0 w-64 h-64 bg-error/10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
+<div class="flex flex-col items-center md:items-start gap-stack-sm z-10">
+<div class="flex items-center gap-2 mb-1">
+<div class="relative w-8 h-8 flex items-center justify-center">
+<div class="absolute inset-0 bg-error rounded-full pulse-ring"></div>
+<span class="material-symbols-outlined icon-filled text-error relative z-10">warning</span>
+</div>
+<span class="font-label-lg text-label-lg text-error uppercase tracking-wider">Critical Urgency</span>
+</div>
+<h2 class="font-headline-xl text-headline-xl md:text-headline-xl text-on-error-container">Immediate Action Required</h2>
+<div class="mt-2 inline-flex items-center gap-2 bg-surface-container-lowest/80 backdrop-blur-sm px-4 py-2 rounded-full border border-error/10 shadow-sm">
+<span class="material-symbols-outlined text-primary text-sm icon-filled">robot_2</span>
+<span class="font-label-md text-label-md text-on-surface font-semibold">94% AI Confidence</span>
+</div>
+</div>
+<div class="hidden md:flex z-10 text-right flex-col justify-center items-end">
+<span class="font-body-md text-body-md text-on-error-container/80">Estimated Risk Level</span>
+<div class="flex gap-1 mt-2">
+<div class="h-2 w-8 rounded-full bg-secondary"></div>
+<div class="h-2 w-8 rounded-full bg-tertiary-container"></div>
+<div class="h-2 w-8 rounded-full bg-error"></div>
+<div class="h-2 w-8 rounded-full bg-error opacity-30"></div>
+</div>
+</div>
+</div>
+<!-- Explanation Card (Left Column) -->
+<div class="col-span-1 md:col-span-8 rounded-xl bg-surface-container-lowest shadow-sm border border-outline-variant/30 p-6 flex flex-col gap-stack-sm hover:shadow-md transition-shadow">
+<div class="flex items-center gap-2 mb-2 border-b border-outline-variant/20 pb-3">
+<span class="material-symbols-outlined text-primary">medical_information</span>
+<h3 class="font-headline-md text-headline-md text-on-surface">Clinical Assessment</h3>
+</div>
+<p class="font-body-lg text-body-lg text-on-surface leading-relaxed">
+                    Symptoms indicate potential <strong class="font-semibold text-error">cardiac distress</strong>. The combination of radiating chest pressure, shortness of breath, and diaphoresis strongly aligns with acute myocardial infarction indicators.
+                </p>
+<div class="mt-4 bg-surface-container rounded-lg p-4 flex gap-3">
+<span class="material-symbols-outlined text-on-surface-variant mt-0.5">info</span>
+<p class="font-body-md text-body-md text-on-surface-variant">
+                        This is an AI-generated preliminary assessment. Do not delay seeking professional medical evaluation. Time is critical.
+                    </p>
+</div>
+</div>
+<!-- Preparation / Protocol Card (Right Column) -->
+<div class="col-span-1 md:col-span-4 rounded-xl bg-surface-container-low shadow-sm border border-outline-variant/20 p-6 flex flex-col gap-stack-sm">
+<h3 class="font-label-lg text-label-lg text-on-surface mb-2">Immediate Steps</h3>
+<ul class="flex flex-col gap-3">
+<li class="flex gap-3 items-start bg-surface-container-lowest p-3 rounded-lg border border-outline-variant/10">
+<span class="material-symbols-outlined text-secondary mt-0.5 icon-filled">airline_seat_recline_normal</span>
+<div>
+<span class="block font-label-md text-label-md text-on-surface">Stay Seated</span>
+<span class="block font-body-md text-body-md text-on-surface-variant text-sm mt-1">Rest and remain calm to lower heart rate.</span>
+</div>
+</li>
+<li class="flex gap-3 items-start bg-surface-container-lowest p-3 rounded-lg border border-outline-variant/10">
+<span class="material-symbols-outlined text-secondary mt-0.5 icon-filled">medication</span>
+<div>
+<span class="block font-label-md text-label-md text-on-surface">Aspirin</span>
+<span class="block font-body-md text-body-md text-on-surface-variant text-sm mt-1">If available and not allergic, chew one adult aspirin (325mg).</span>
+</div>
+</li>
+<li class="flex gap-3 items-start bg-surface-container-lowest p-3 rounded-lg border border-outline-variant/10">
+<span class="material-symbols-outlined text-error mt-0.5 icon-filled">lock_open</span>
+<div>
+<span class="block font-label-md text-label-md text-on-surface">Unlock Door</span>
+<span class="block font-body-md text-body-md text-on-surface-variant text-sm mt-1">Ensure emergency responders can enter freely.</span>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</main>
+<!-- Fixed Action Bar (Thumb-Zone Ergonomics) -->
+<div class="fixed bottom-0 left-0 w-full bg-surface-container-lowest/95 backdrop-blur-md border-t border-outline-variant/20 shadow-[0_-4px_12px_rgba(0,0,0,0.05)] z-40 p-margin-mobile md:px-margin-desktop md:py-6">
+<div class="max-w-5xl mx-auto flex flex-col md:flex-row-reverse gap-stack-sm md:gap-stack-md">
+<!-- Primary Critical Action -->
+<button class="flex-1 min-h-[56px] h-touch-target-min bg-error hover:bg-on-error-container text-on-error rounded-xl font-label-lg text-label-lg flex justify-center items-center gap-2 shadow-sm transition-transform active:scale-[0.98]">
+<span class="material-symbols-outlined icon-filled">phone_in_talk</span>
+                Call Emergency Services
+            </button>
+<!-- Secondary Critical Action -->
+<button class="flex-1 min-h-[56px] h-touch-target-min bg-primary hover:bg-primary-container text-on-primary rounded-xl font-label-lg text-label-lg flex justify-center items-center gap-2 shadow-sm transition-transform active:scale-[0.98]">
+<span class="material-symbols-outlined">local_hospital</span>
+                Find Hospitals
+            </button>
+</div>
+</div>
+</body></html>

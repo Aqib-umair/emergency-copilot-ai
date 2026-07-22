@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Doctor Summary Preview</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "tertiary": "#611e00",
+                      "on-surface-variant": "#444653",
+                      "tertiary-fixed-dim": "#ffb59a",
+                      "on-tertiary-fixed": "#380d00",
+                      "on-error": "#ffffff",
+                      "inverse-surface": "#213145",
+                      "secondary-fixed-dim": "#4edea3",
+                      "secondary-fixed": "#6ffbbe",
+                      "primary-fixed-dim": "#b8c4ff",
+                      "surface-container": "#e5eeff",
+                      "on-secondary-fixed": "#002113",
+                      "error-container": "#ffdad6",
+                      "tertiary-fixed": "#ffdbce",
+                      "primary": "#00288e",
+                      "surface-container-high": "#dce9ff",
+                      "secondary": "#006c49",
+                      "surface-bright": "#f8f9ff",
+                      "on-primary-container": "#a8b8ff",
+                      "on-surface": "#0b1c30",
+                      "primary-container": "#1e40af",
+                      "on-primary": "#ffffff",
+                      "primary-fixed": "#dde1ff",
+                      "surface-container-highest": "#d3e4fe",
+                      "surface-dim": "#cbdbf5",
+                      "surface-container-lowest": "#ffffff",
+                      "surface-container-low": "#eff4ff",
+                      "outline": "#757684",
+                      "on-secondary": "#ffffff",
+                      "on-secondary-container": "#00714d",
+                      "on-secondary-fixed-variant": "#005236",
+                      "on-tertiary-fixed-variant": "#802a00",
+                      "on-tertiary-container": "#ffa583",
+                      "on-tertiary": "#ffffff",
+                      "on-error-container": "#93000a",
+                      "background": "#f8f9ff",
+                      "tertiary-container": "#872d00",
+                      "inverse-primary": "#b8c4ff",
+                      "surface": "#f8f9ff",
+                      "on-primary-fixed-variant": "#173bab",
+                      "on-primary-fixed": "#001453",
+                      "surface-tint": "#3755c3",
+                      "outline-variant": "#c4c5d5",
+                      "error": "#ba1a1a",
+                      "surface-variant": "#d3e4fe",
+                      "inverse-on-surface": "#eaf1ff",
+                      "on-background": "#0b1c30",
+                      "secondary-container": "#6cf8bb"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "touch-target-min": "48px",
+                      "stack-md": "1rem",
+                      "margin-desktop": "2rem",
+                      "stack-sm": "0.5rem",
+                      "gutter": "1rem",
+                      "stack-lg": "2rem",
+                      "margin-mobile": "1rem"
+              },
+              "fontFamily": {
+                      "label-lg": ["Inter"],
+                      "headline-xl": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "headline-lg-mobile": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "label-md": ["Inter"],
+                      "body-md": ["Inter"]
+              },
+              "fontSize": {
+                      "label-lg": ["16px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                      "headline-xl": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                      "headline-lg-mobile": ["28px", {"lineHeight": "34px", "fontWeight": "700"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "label-md": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        body { -webkit-tap-highlight-color: transparent; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface flex flex-col min-h-screen antialiased selection:bg-primary-container selection:text-on-primary-container">
+<header class="sticky top-0 z-50 flex items-center justify-between px-margin-mobile h-[72px] bg-surface-container-lowest border-b border-outline-variant shadow-sm transition-all duration-200">
+<button aria-label="Go back" class="flex items-center justify-center w-touch-target-min h-touch-target-min text-primary rounded-full hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-[24px]">arrow_back</span>
+</button>
+<h1 class="font-headline-md text-headline-md text-primary font-bold tracking-tight">Report Preview</h1>
+<div class="w-touch-target-min h-touch-target-min"></div>
+</header>
+<main class="flex-1 overflow-y-auto px-margin-mobile py-stack-lg md:px-margin-desktop flex flex-col items-center pb-[100px]">
+<div class="w-full max-w-3xl bg-surface-container-lowest rounded-xl border border-outline-variant shadow-[0_4px_12px_rgba(0,0,0,0.05)] overflow-hidden">
+<div class="p-6 border-b border-outline-variant bg-surface-bright flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+<div>
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg font-bold text-on-surface">Doctor Summary</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Generated by Emergency Copilot AI</p>
+</div>
+<div class="flex flex-col items-start md:items-end text-left md:text-right">
+<p class="font-label-md text-label-md text-outline">Date: Oct 26, 2023</p>
+<p class="font-label-md text-label-md text-outline">ID: REQ-992-B</p>
+</div>
+</div>
+<div class="p-6 bg-error-container text-on-error-container flex items-center gap-4">
+<span class="material-symbols-outlined text-[32px]" style="font-variation-settings: 'FILL' 1;">warning</span>
+<div>
+<p class="font-label-lg text-label-lg font-bold uppercase tracking-wider">Urgency Level: High</p>
+<p class="font-body-md text-body-md mt-1">Immediate medical attention recommended based on provided symptoms.</p>
+</div>
+</div>
+<div class="p-6 space-y-stack-lg">
+<section>
+<h3 class="font-label-lg text-label-lg text-primary border-b-2 border-surface-container-high pb-2 mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px]">person</span> Patient Demographics
+                    </h3>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-surface-container-low p-4 rounded-lg">
+<p class="font-label-md text-label-md text-on-surface-variant">Full Name</p>
+<p class="font-body-lg text-body-lg font-medium text-on-surface mt-1">Jane Doe</p>
+</div>
+<div class="bg-surface-container-low p-4 rounded-lg">
+<p class="font-label-md text-label-md text-on-surface-variant">Age</p>
+<p class="font-body-lg text-body-lg font-medium text-on-surface mt-1">42 Years</p>
+</div>
+</div>
+</section>
+<section>
+<h3 class="font-label-lg text-label-lg text-primary border-b-2 border-surface-container-high pb-2 mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px]">vital_signs</span> Reported Symptoms
+                    </h3>
+<div class="flex flex-wrap gap-2">
+<span class="inline-flex items-center gap-1 px-3 py-2 rounded-full bg-surface-container-highest font-body-md text-body-md text-on-surface">
+<span class="material-symbols-outlined text-[16px]">check_circle</span> Severe Chest Pain
+                        </span>
+<span class="inline-flex items-center gap-1 px-3 py-2 rounded-full bg-surface-container-highest font-body-md text-body-md text-on-surface">
+<span class="material-symbols-outlined text-[16px]">check_circle</span> Shortness of Breath
+                        </span>
+<span class="inline-flex items-center gap-1 px-3 py-2 rounded-full bg-surface-container-highest font-body-md text-body-md text-on-surface">
+<span class="material-symbols-outlined text-[16px]">check_circle</span> Nausea
+                        </span>
+<span class="inline-flex items-center gap-1 px-3 py-2 rounded-full bg-surface-container-highest font-body-md text-body-md text-on-surface">
+<span class="material-symbols-outlined text-[16px]">check_circle</span> Sweating
+                        </span>
+</div>
+</section>
+<section>
+<h3 class="font-label-lg text-label-lg text-primary border-b-2 border-surface-container-high pb-2 mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px]">analytics</span> AI Clinical Summary
+                    </h3>
+<div class="bg-surface-bright p-5 rounded-lg border border-surface-container-high border-l-4 border-l-primary">
+<p class="font-body-lg text-body-lg text-on-surface leading-relaxed">
+                            Based on the reported symptoms of severe chest pain, shortness of breath, nausea, and diaphoresis in a 42-year-old female, the presentation is highly concerning for acute coronary syndrome (ACS) or myocardial infarction. The constellation of symptoms requires immediate emergency medical evaluation to rule out life-threatening cardiac events.
+                        </p>
+</div>
+</section>
+<section>
+<h3 class="font-label-lg text-label-lg text-primary border-b-2 border-surface-container-high pb-2 mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px]">medical_services</span> First-Aid Guidance Provided
+                    </h3>
+<div class="flex flex-col gap-3">
+<div class="flex items-start gap-4 p-4 min-h-[64px] bg-surface-container-lowest border border-outline-variant rounded-lg">
+<div class="flex-shrink-0 w-8 h-8 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-label-lg text-label-lg font-bold">1</div>
+<div>
+<h4 class="font-label-lg text-label-lg text-on-surface">Call Emergency Services</h4>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Instructed user to immediately dial 911 or local emergency number.</p>
+</div>
+</div>
+<div class="flex items-start gap-4 p-4 min-h-[64px] bg-surface-container-lowest border border-outline-variant rounded-lg">
+<div class="flex-shrink-0 w-8 h-8 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-label-lg text-label-lg font-bold">2</div>
+<div>
+<h4 class="font-label-lg text-label-lg text-on-surface">Rest and Positioning</h4>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Advised to have the patient sit down, rest, and try to remain calm to reduce heart strain.</p>
+</div>
+</div>
+<div class="flex items-start gap-4 p-4 min-h-[64px] bg-surface-container-lowest border border-outline-variant rounded-lg">
+<div class="flex-shrink-0 w-8 h-8 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-label-lg text-label-lg font-bold">3</div>
+<div>
+<h4 class="font-label-lg text-label-lg text-on-surface">Medication Check</h4>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Asked if patient has prescribed Nitroglycerin or if they are able to chew a standard aspirin (if not allergic).</p>
+</div>
+</div>
+</div>
+</section>
+</div>
+</div>
+</main>
+<footer class="fixed bottom-0 left-0 w-full bg-surface-container-lowest border-t border-outline-variant p-margin-mobile flex justify-center items-center gap-4 z-50 shadow-[0_-4px_12px_rgba(0,0,0,0.02)]">
+<div class="w-full max-w-3xl flex justify-between items-center gap-4">
+<button class="flex-1 h-touch-target-min flex items-center justify-center gap-2 bg-primary text-on-primary rounded-xl font-label-lg text-label-lg hover:bg-primary-container hover:text-on-primary-container transition-colors shadow-sm">
+<span class="material-symbols-outlined">share</span>
+                Share Report
+            </button>
+<button class="flex-1 h-touch-target-min flex items-center justify-center gap-2 border-2 border-primary text-primary rounded-xl font-label-lg text-label-lg hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined">download</span>
+                Download PDF
+            </button>
+<button aria-label="Print Report" class="w-touch-target-min h-touch-target-min flex items-center justify-center flex-shrink-0 border-2 border-outline-variant text-on-surface-variant rounded-xl hover:bg-surface-container-highest transition-colors">
+<span class="material-symbols-outlined">print</span>
+</button>
+</div>
+</footer>
+</body></html>

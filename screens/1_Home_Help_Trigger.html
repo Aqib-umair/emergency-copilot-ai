@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Emergency Copilot AI - Home</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary": "#611e00",
+                    "on-surface-variant": "#444653",
+                    "tertiary-fixed-dim": "#ffb59a",
+                    "on-tertiary-fixed": "#380d00",
+                    "on-error": "#ffffff",
+                    "inverse-surface": "#213145",
+                    "secondary-fixed-dim": "#4edea3",
+                    "secondary-fixed": "#6ffbbe",
+                    "primary-fixed-dim": "#b8c4ff",
+                    "surface-container": "#e5eeff",
+                    "on-secondary-fixed": "#002113",
+                    "error-container": "#ffdad6",
+                    "tertiary-fixed": "#ffdbce",
+                    "primary": "#00288e",
+                    "surface-container-high": "#dce9ff",
+                    "secondary": "#006c49",
+                    "surface-bright": "#f8f9ff",
+                    "on-primary-container": "#a8b8ff",
+                    "on-surface": "#0b1c30",
+                    "primary-container": "#1e40af",
+                    "on-primary": "#ffffff",
+                    "primary-fixed": "#dde1ff",
+                    "surface-container-highest": "#d3e4fe",
+                    "surface-dim": "#cbdbf5",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container-low": "#eff4ff",
+                    "outline": "#757684",
+                    "on-secondary": "#ffffff",
+                    "on-secondary-container": "#00714d",
+                    "on-secondary-fixed-variant": "#005236",
+                    "on-tertiary-fixed-variant": "#802a00",
+                    "on-tertiary-container": "#ffa583",
+                    "on-tertiary": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "background": "#f8f9ff",
+                    "tertiary-container": "#872d00",
+                    "inverse-primary": "#b8c4ff",
+                    "surface": "#f8f9ff",
+                    "on-primary-fixed-variant": "#173bab",
+                    "on-primary-fixed": "#001453",
+                    "surface-tint": "#3755c3",
+                    "outline-variant": "#c4c5d5",
+                    "error": "#ba1a1a",
+                    "surface-variant": "#d3e4fe",
+                    "inverse-on-surface": "#eaf1ff",
+                    "on-background": "#0b1c30",
+                    "secondary-container": "#6cf8bb"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "touch-target-min": "48px",
+                    "stack-md": "1rem",
+                    "margin-desktop": "2rem",
+                    "stack-sm": "0.5rem",
+                    "gutter": "1rem",
+                    "stack-lg": "2rem",
+                    "margin-mobile": "1rem"
+            },
+            "fontFamily": {
+                    "label-lg": ["Inter", "sans-serif"],
+                    "headline-xl": ["Inter", "sans-serif"],
+                    "headline-lg": ["Inter", "sans-serif"],
+                    "headline-lg-mobile": ["Inter", "sans-serif"],
+                    "headline-md": ["Inter", "sans-serif"],
+                    "body-lg": ["Inter", "sans-serif"],
+                    "label-md": ["Inter", "sans-serif"],
+                    "body-md": ["Inter", "sans-serif"]
+            },
+            "fontSize": {
+                    "label-lg": ["16px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-xl": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "34px", "fontWeight": "700"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9ff;
+            color: #0b1c30;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        /* Custom Breathing Pulse Animation */
+        @keyframes breathe-pulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(0, 40, 142, 0.4);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 0 40px 20px rgba(0, 40, 142, 0.2);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(0, 40, 142, 0);
+            }
+        }
+
+        .btn-breathe {
+            animation: breathe-pulse 3s infinite ease-in-out;
+        }
+        
+        .ripple-bg {
+            position: absolute;
+            inset: -20px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(220,233,255,1) 0%, rgba(220,233,255,0) 70%);
+            z-index: 0;
+            animation: pulse-ring 3s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
+        }
+        
+        @keyframes pulse-ring {
+            0% { transform: scale(0.8); opacity: 0.8; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background h-screen flex flex-col overflow-hidden relative">
+<!-- TopAppBar (From JSON) -->
+<header class="bg-surface dark:bg-surface-dim border-b border-outline-variant dark:border-outline shadow-sm dark:shadow-none fixed top-0 w-full z-50 flex justify-between items-center px-margin-mobile h-touch-target-min">
+<!-- Leading Icon: Language -->
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-high dark:hover:bg-inverse-surface transition-colors text-primary dark:text-primary-fixed relative group">
+<span class="material-symbols-outlined">language</span>
+<!-- Hidden Language Dropdown (Fulfilling prompt request cleanly within JSON structure) -->
+<div class="absolute top-full left-0 mt-1 w-32 bg-surface-container-lowest rounded-lg shadow-lg border border-outline-variant hidden group-hover:flex flex-col overflow-hidden">
+<div class="px-4 py-2 hover:bg-surface-container text-body-md font-body-md cursor-pointer text-on-surface">English</div>
+<div class="px-4 py-2 hover:bg-surface-container text-body-md font-body-md cursor-pointer text-on-surface">Hindi</div>
+<div class="px-4 py-2 hover:bg-surface-container text-body-md font-body-md cursor-pointer text-on-surface">Telugu</div>
+<div class="px-4 py-2 hover:bg-surface-container text-body-md font-body-md cursor-pointer text-on-surface">Tamil</div>
+</div>
+</button>
+<!-- Headline -->
+<div class="flex flex-col items-center justify-center">
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed text-center">
+                Emergency Copilot AI
+            </h1>
+<span class="text-label-md font-label-md text-on-surface-variant/80 mt-0.5">Help in Seconds, Not Minutes</span>
+</div>
+<!-- Trailing Icon: Account -->
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-high dark:hover:bg-inverse-surface transition-colors text-primary dark:text-primary-fixed">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 mt-[72px] mb-[72px] flex flex-col items-center justify-center px-margin-mobile relative z-10">
+<!-- Hero Section: Animated Help Button -->
+<div class="flex-1 flex flex-col items-center justify-center w-full max-w-md mx-auto relative">
+<div class="relative flex items-center justify-center w-64 h-64 mb-8">
+<!-- Background ambient ripple -->
+<div class="ripple-bg"></div>
+<div class="ripple-bg" style="animation-delay: 1.5s;"></div>
+<!-- Main Interactive Button -->
+<button class="relative z-10 w-48 h-48 rounded-full bg-gradient-to-b from-primary to-primary-container text-on-primary shadow-lg flex flex-col items-center justify-center btn-breathe hover:brightness-110 active:scale-95 transition-all duration-150 border-4 border-surface-container-highest">
+<span class="text-5xl mb-2">🚑</span>
+<span class="font-headline-lg-mobile text-headline-lg-mobile font-bold tracking-wider">HELP</span>
+</button>
+</div>
+<!-- Instruction Text -->
+<p class="font-body-lg text-body-lg text-on-surface text-center mb-12">
+                Tap to describe the emergency
+            </p>
+</div>
+<!-- Disclaimer -->
+<div class="w-full max-w-md mx-auto text-center px-4 pb-4">
+<p class="font-label-md text-label-md text-on-surface-variant flex items-start justify-center gap-2">
+<span class="material-symbols-outlined text-[16px] mt-0.5 text-error">info</span>
+<span class="text-left">AI guidance is for preliminary support and is not a substitute for professional medical care. <strong>Call local emergency services immediately in critical situations.</strong></span>
+</p>
+</div>
+</main>
+<!-- BottomNavBar (From JSON) - 'AI Chat' active as primary engagement interface -->
+<nav class="bg-surface-container dark:bg-inverse-surface border-t border-outline-variant shadow-md dark:shadow-none fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-2 py-2 md:hidden rounded-t-xl">
+<!-- Tab 1: Hospitals -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-4 py-1 hover:bg-surface-container-highest dark:hover:bg-surface-variant rounded-xl transition-colors">
+<span class="material-symbols-outlined">local_hospital</span>
+<span class="font-label-md text-label-md mt-1 text-[11px]">Hospitals</span>
+</button>
+<!-- Tab 2: Reports -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-4 py-1 hover:bg-surface-container-highest dark:hover:bg-surface-variant rounded-xl transition-colors">
+<span class="material-symbols-outlined">description</span>
+<span class="font-label-md text-label-md mt-1 text-[11px]">Reports</span>
+</button>
+<!-- Tab 3: AI Chat (ACTIVE) -->
+<button class="flex flex-col items-center justify-center bg-primary-container dark:bg-primary text-on-primary-container dark:text-on-primary rounded-xl px-4 py-1 scale-90 transition-all duration-200">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
+<span class="font-label-md text-label-md mt-1 text-[11px] font-bold">AI Chat</span>
+</button>
+<!-- Tab 4: Profile -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-4 py-1 hover:bg-surface-container-highest dark:hover:bg-surface-variant rounded-xl transition-colors">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-md text-label-md mt-1 text-[11px]">Profile</span>
+</button>
+</nav>
+<!-- Desktop Navigation Alternative (Hidden on Mobile) -->
+<nav class="hidden md:flex fixed bottom-0 left-0 w-full bg-surface-container border-t border-outline-variant px-margin-desktop py-4 z-40 justify-center gap-8 shadow-[0_-4px_12px_rgba(0,0,0,0.05)]">
+<button class="flex items-center gap-2 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">local_hospital</span>
+<span class="font-label-lg text-label-lg">Hospitals</span>
+</button>
+<button class="flex items-center gap-2 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">description</span>
+<span class="font-label-lg text-label-lg">Reports</span>
+</button>
+<button class="flex items-center gap-2 text-primary font-bold bg-primary-container/20 px-4 py-2 rounded-full">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
+<span class="font-label-lg text-label-lg">AI Chat</span>
+</button>
+<button class="flex items-center gap-2 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-lg text-label-lg">Profile</span>
+</button>
+</nav>
+</body></html>
