@@ -20,7 +20,6 @@ export default function HospitalFinderPage() {
   const caseId = useEmergencyStore((state) => state.caseId);
 
   const fetchHospitals = useCallback(async (lat: number, lon: number) => {
-    console.log("Fetching hospitals for coordinates:", lat, lon);
     setLoading(true);
     setGeoError(null);
     const cacheKey = `hospitals_${lat.toFixed(2)}_${lon.toFixed(2)}`;
@@ -28,122 +27,124 @@ export default function HospitalFinderPage() {
     
     if (cached) {
       try {
-        const parsed = JSON.parse(cached);
-        setHospitals(parsed);
+        setHospitals(JSON.parse(cached));
         setLoading(false);
-        console.log("Loaded hospitals from cache");
         return;
       } catch (e) {
-        console.warn("Failed to parse cached hospitals", e);
+        sessionStorage.removeItem(cacheKey);
       }
     }
 
     const query = `
-      [out:json][timeout:25];
+      [out:json][timeout:15];
       (
-        node["amenity"~"hospital|clinic"](around:5000, ${lat}, ${lon});
-        way["amenity"~"hospital|clinic"](around:5000, ${lat}, ${lon});
-        relation["amenity"~"hospital|clinic"](around:5000, ${lat}, ${lon});
-        node["healthcare"~"hospital|clinic|centre"](around:5000, ${lat}, ${lon});
-        way["healthcare"~"hospital|clinic|centre"](around:5000, ${lat}, ${lon});
-        relation["healthcare"~"hospital|clinic|centre"](around:5000, ${lat}, ${lon});
+        node["amenity"~"hospital|clinic|doctors|pharmacy"](around:5000, ${lat}, ${lon});
+        way["amenity"~"hospital|clinic|doctors|pharmacy"](around:5000, ${lat}, ${lon});
+        relation["amenity"~"hospital|clinic|doctors|pharmacy"](around:5000, ${lat}, ${lon});
+        node["healthcare"](around:5000, ${lat}, ${lon});
+        way["healthcare"](around:5000, ${lat}, ${lon});
+        relation["healthcare"](around:5000, ${lat}, ${lon});
         node["emergency"="yes"](around:5000, ${lat}, ${lon});
         way["emergency"="yes"](around:5000, ${lat}, ${lon});
         relation["emergency"="yes"](around:5000, ${lat}, ${lon});
       );
       out center;
     `;
-    const url = `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`;
+    const encodedQuery = encodeURIComponent(query);
     
-    try {
-      console.log("Executing Overpass API fetch...");
-      const res = await fetch(url).catch(err => {
-        throw new Error("Network request failed: " + err.message);
-      });
-      
-      if (!res) {
-        throw new Error("Received undefined response from fetch. Please check your connection or ad-blocker.");
-      }
-      
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
-      }
-      const text = await res.text();
-      let data;
+    const endpoints = [
+      'https://overpass-api.de/api/interpreter',
+      'https://lz4.overpass-api.de/api/interpreter',
+      'https://z.overpass-api.de/api/interpreter'
+    ];
+
+    let data = null;
+
+    for (const endpoint of endpoints) {
       try {
-        data = JSON.parse(text);
-      } catch (e) {
-        throw new Error("Invalid JSON response from Overpass API");
+        const response = await fetch(`${endpoint}?data=${encodedQuery}`);
+        if (!response.ok) {
+          throw new Error(`HTTP error ${response.status}`);
+        }
+        data = await response.json();
+        break; // Success, exit retry loop
+      } catch (err: any) {
+        console.warn(`Failed to fetch from ${endpoint}:`, err.message);
       }
-      
-      console.log("Overpass API returned:", data.elements?.length || 0, "elements");
+    }
 
-      const getDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
-        const R = 6371;
-        const dLat = (lat2 - lat1) * (Math.PI/180);
-        const dLon = (lon2 - lon1) * (Math.PI/180); 
-        const a = 
-          Math.sin(dLat/2) * Math.sin(dLat/2) +
-          Math.cos(lat1 * (Math.PI/180)) * Math.cos(lat2 * (Math.PI/180)) * 
-          Math.sin(dLon/2) * Math.sin(dLon/2); 
-        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-        return R * c; 
-      };
-
-      if (!data || !data.elements || data.elements.length === 0) {
-        console.log("No hospitals found in the radius.");
-        setHospitals([]);
-        return;
-      }
-
-      let results = data.elements.map((el: any) => {
-        const hLat = el.lat || el.center?.lat;
-        const hLon = el.lon || el.center?.lon;
-        const dist = hLat && hLon ? getDistance(lat, lon, hLat, hLon) : 999;
-        
-        let name = el.tags?.name || el.tags?.['name:en'] || 'Unknown Medical Facility';
-        
-        return {
-          id: el.id,
-          name: name,
-          lat: hLat,
-          lon: hLon,
-          tags: el.tags,
-          distance: dist
-        };
-      }).filter((h: any) => h.lat && h.lon && h.name !== 'Unknown Medical Facility');
-
-      // Sort by distance
-      results.sort((a: any, b: any) => (a.distance || 0) - (b.distance || 0));
-      
-      // Deduplicate by name and approximate location
-      const uniqueResults = results.filter((h: any, index: number, self: any[]) => 
-        index === self.findIndex((t) => (
-          t.name === h.name
-        ))
-      );
-
-      console.log("Final processed unique hospitals:", uniqueResults.length);
-      setHospitals(uniqueResults);
-      sessionStorage.setItem(cacheKey, JSON.stringify(uniqueResults));
-      
-      if (caseId && uniqueResults.length > 0) {
-        const payload = uniqueResults.map((h: any) => ({
-          patient_case_id: caseId,
-          hospital_name: h.name,
-          latitude: h.lat,
-          longitude: h.lon,
-          distance: h.distance || null
-        }));
-        supabase.from('hospital_searches').insert(payload).then(({ error }) => {
-          if (error) console.error("Supabase Insert Error (hospital_searches):", error);
-        });
-      }
-    } catch (error: any) {
-      console.error("Failed to fetch hospitals:", error);
-      setGeoError(`Failed to fetch hospitals: ${error.message}`);
-    } finally {
+    if (!data) {
+      setGeoError("We couldn't connect to the map servers to find nearby hospitals. Please check your internet connection or try again in a moment.");
       setLoading(false);
+      return;
+    }
+
+    const getDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
+      const R = 6371;
+      const dLat = (lat2 - lat1) * (Math.PI/180);
+      const dLon = (lon2 - lon1) * (Math.PI/180); 
+      const a = 
+        Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.cos(lat1 * (Math.PI/180)) * Math.cos(lat2 * (Math.PI/180)) * 
+        Math.sin(dLon/2) * Math.sin(dLon/2); 
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+      return R * c; 
+    };
+
+    if (!data.elements || data.elements.length === 0) {
+      setHospitals([]);
+      setLoading(false);
+      return;
+    }
+
+    let results = data.elements.map((el: any) => {
+      const hLat = el.lat || el.center?.lat;
+      const hLon = el.lon || el.center?.lon;
+      const dist = hLat && hLon ? getDistance(lat, lon, hLat, hLon) : 999;
+      
+      const tags = el.tags || {};
+      const name = tags.name || tags['name:en'] || 'Unknown Medical Facility';
+      
+      let address = '';
+      if (tags['addr:street']) {
+        address = `${tags['addr:housenumber'] ? tags['addr:housenumber'] + ' ' : ''}${tags['addr:street']}`;
+        if (tags['addr:city']) address += `, ${tags['addr:city']}`;
+      } else if (tags['addr:full']) {
+        address = tags['addr:full'];
+      }
+
+      return {
+        id: el.id,
+        name: name,
+        lat: hLat,
+        lon: hLon,
+        tags: tags,
+        distance: dist,
+        address: address
+      };
+    }).filter((h: any) => h.lat && h.lon && h.name !== 'Unknown Medical Facility');
+
+    results.sort((a: any, b: any) => (a.distance || 0) - (b.distance || 0));
+    
+    const uniqueResults = results.filter((h: any, index: number, self: any[]) => 
+      index === self.findIndex((t) => t.name === h.name)
+    );
+
+    setHospitals(uniqueResults);
+    sessionStorage.setItem(cacheKey, JSON.stringify(uniqueResults));
+    setLoading(false);
+    
+    if (caseId && uniqueResults.length > 0) {
+      const payload = uniqueResults.map((h: any) => ({
+        patient_case_id: caseId,
+        hospital_name: h.name,
+        latitude: h.lat,
+        longitude: h.lon,
+        distance: h.distance || null
+      }));
+      supabase.from('hospital_searches').insert(payload).then(({ error }) => {
+        if (error) console.error("Supabase Insert Error (hospital_searches):", error);
+      });
     }
   }, [caseId]);
 
@@ -284,6 +285,11 @@ export default function HospitalFinderPage() {
                         <h3 className="font-[family-name:var(--font-headline-sm)] text-[length:var(--font-headline-sm)] text-[var(--color-on-surface)] font-bold line-clamp-2 leading-tight">
                           {h.name}
                         </h3>
+                        {h.address && (
+                          <div className="text-[var(--color-on-surface-variant)] text-xs mt-1 line-clamp-1 opacity-80 font-medium">
+                            {h.address}
+                          </div>
+                        )}
                         <div className="flex items-center gap-1 mt-1 text-[var(--color-on-surface-variant)] font-[family-name:var(--font-body-sm)] text-[length:var(--font-body-sm)] font-medium">
                           <span className="material-symbols-outlined text-[16px]">location_on</span>
                           <span>{distStr} away</span>
