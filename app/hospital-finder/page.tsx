@@ -38,19 +38,24 @@ export default function HospitalFinderPage() {
     const query = `
       [out:json][timeout:15];
       (
-        node["amenity"~"hospital|clinic|doctors|pharmacy"](around:5000, ${lat}, ${lon});
-        way["amenity"~"hospital|clinic|doctors|pharmacy"](around:5000, ${lat}, ${lon});
-        relation["amenity"~"hospital|clinic|doctors|pharmacy"](around:5000, ${lat}, ${lon});
-        node["healthcare"](around:5000, ${lat}, ${lon});
-        way["healthcare"](around:5000, ${lat}, ${lon});
-        relation["healthcare"](around:5000, ${lat}, ${lon});
+        node["amenity"="hospital"](around:5000, ${lat}, ${lon});
+        way["amenity"="hospital"](around:5000, ${lat}, ${lon});
+        relation["amenity"="hospital"](around:5000, ${lat}, ${lon});
+        node["amenity"="clinic"](around:5000, ${lat}, ${lon});
+        way["amenity"="clinic"](around:5000, ${lat}, ${lon});
+        relation["amenity"="clinic"](around:5000, ${lat}, ${lon});
+        node["amenity"="doctors"](around:5000, ${lat}, ${lon});
+        way["amenity"="doctors"](around:5000, ${lat}, ${lon});
+        relation["amenity"="doctors"](around:5000, ${lat}, ${lon});
+        node["amenity"="pharmacy"](around:5000, ${lat}, ${lon});
+        way["amenity"="pharmacy"](around:5000, ${lat}, ${lon});
+        relation["amenity"="pharmacy"](around:5000, ${lat}, ${lon});
         node["emergency"="yes"](around:5000, ${lat}, ${lon});
         way["emergency"="yes"](around:5000, ${lat}, ${lon});
         relation["emergency"="yes"](around:5000, ${lat}, ${lon});
       );
       out center;
     `;
-    const encodedQuery = encodeURIComponent(query);
     
     const endpoints = [
       'https://overpass-api.de/api/interpreter',
@@ -62,7 +67,14 @@ export default function HospitalFinderPage() {
 
     for (const endpoint of endpoints) {
       try {
-        const response = await fetch(`${endpoint}?data=${encodedQuery}`);
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          body: `data=${encodeURIComponent(query)}`,
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          }
+        });
+        
         if (!response.ok) {
           throw new Error(`HTTP error ${response.status}`);
         }
