@@ -48,7 +48,7 @@ export async function POST(req: Request) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-goog-api-key': (process.env.GEMINI_API_KEY || '').trim().replace(/^"|"$/g, '')
+        'x-goog-api-key': (process.env.GEMINI_API_KEY || '').split('\n')[0].trim().replace(/^"|"$/g, '')
       },
       body: JSON.stringify({
         contents: [{ role: 'user', parts: [{ text: prompt }] }],
