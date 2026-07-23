@@ -162,16 +162,16 @@ export default function AiAnalysisLoadingPage() {
           {/* Typography */}
           <div className="flex flex-col items-center min-h-[96px] w-full">
             <h1 
-              className="font-[family-name:var(--font-headline-md)] text-[length:var(--font-headline-md)] md:font-[family-name:var(--font-headline-lg)] md:text-[length:var(--font-headline-lg)] text-[var(--color-on-surface)] mb-[var(--spacing-stack-sm)] transition-opacity duration-500"
+              className="font-[family-name:var(--font-headline-md)] text-[length:var(--font-headline-md)] md:text-[length:var(--font-headline-lg)] lg:text-5xl text-[var(--color-on-surface)] mb-[var(--spacing-stack-sm)] transition-opacity duration-500 font-bold"
               style={{ opacity }}
             >
               {messages[currentMessageIndex]}
             </h1>
-            <div className="flex items-center gap-2 text-[var(--color-on-surface-variant)]">
-              <span className="material-symbols-outlined text-[18px] animate-spin">
+            <div className="flex items-center gap-2 text-[var(--color-on-surface-variant)] mt-2">
+              <span className="material-symbols-outlined text-[20px] md:text-[24px] animate-spin">
                 progress_activity
               </span>
-              <p className="font-[family-name:var(--font-body-md)] text-[length:var(--font-body-md)]">
+              <p className="font-[family-name:var(--font-body-md)] text-[length:var(--font-body-md)] md:text-[length:var(--font-body-lg)]">
                 Please do not close this app
               </p>
             </div>

@@ -179,13 +179,13 @@ export default function PatientDetailsPage() {
               {/* Gender */}
               <div className="flex flex-col space-y-2">
                 <label className="font-[family-name:var(--font-label-lg)] text-[length:var(--font-label-lg)] text-[var(--color-on-surface)] tracking-wide font-medium">Gender</label>
-                <div className="flex bg-[var(--color-surface-container)] rounded-xl p-1 shadow-inner">
+                <div className="flex flex-wrap sm:flex-nowrap gap-1 bg-[var(--color-surface-container)] rounded-xl p-1 shadow-inner">
                   {['Male', 'Female', 'Other'].map((g) => (
                     <button
                       key={g}
                       type="button"
                       onClick={() => setValue('gender', g)}
-                      className={`flex-1 h-[48px] rounded-lg font-[family-name:var(--font-label-lg)] text-[length:var(--font-label-lg)] transition-all duration-200 ${
+                      className={`flex-1 min-w-[30%] h-[48px] rounded-lg font-[family-name:var(--font-label-lg)] text-[length:var(--font-label-lg)] transition-all duration-200 ${
                         gender === g
                           ? 'bg-[var(--color-surface-container-lowest)] text-[var(--color-primary)] shadow-sm border border-[var(--color-outline-variant)]'
                           : 'text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container-high)] border border-transparent'

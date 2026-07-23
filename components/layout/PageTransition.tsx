@@ -71,11 +71,11 @@ export default function PageTransition({
 
       {/* Bottom Right Next Button */}
       {!hideNext && (
-        <div className="fixed bottom-[var(--spacing-margin-mobile)] right-[var(--spacing-margin-mobile)] z-50">
+        <div className="fixed bottom-[var(--spacing-margin-mobile)] left-[var(--spacing-margin-mobile)] right-[var(--spacing-margin-mobile)] md:left-auto md:right-[var(--spacing-margin-mobile)] z-50 flex justify-center md:justify-end">
           <button 
             onClick={handleNext}
             disabled={nextDisabled}
-            className="flex items-center gap-2 bg-[var(--color-primary)] text-[var(--color-on-primary)] font-bold px-6 py-3 rounded-full shadow-lg hover:shadow-xl active:scale-95 transition-all disabled:opacity-50 disabled:pointer-events-none disabled:shadow-none"
+            className="flex items-center justify-center gap-2 bg-[var(--color-primary)] text-[var(--color-on-primary)] font-bold px-6 py-4 md:py-3 w-full md:w-auto rounded-full shadow-lg hover:shadow-xl active:scale-95 transition-all disabled:opacity-50 disabled:pointer-events-none disabled:shadow-none"
           >
             <span className="font-[family-name:var(--font-label-lg)] text-[length:var(--font-label-lg)] tracking-wide uppercase">{nextLabel}</span>
             <span className="material-symbols-outlined text-[20px]">arrow_forward_ios</span>

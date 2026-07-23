@@ -73,7 +73,7 @@ export default function MedicalSummaryPage() {
             <h3 className="font-[family-name:var(--font-label-lg)] text-[length:var(--font-label-lg)] text-[var(--color-primary)] mb-4 flex items-center gap-2 font-bold tracking-wide">
               <span className="material-symbols-outlined text-[20px]">person</span> Patient Demographics
             </h3>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="bg-[var(--color-surface-container-lowest)] p-4 rounded-2xl border border-[var(--color-outline-variant)]/30 shadow-sm">
                 <p className="font-[family-name:var(--font-label-md)] text-[length:var(--font-label-md)] text-[var(--color-on-surface-variant)] font-semibold">Full Name</p>
                 <p className="font-[family-name:var(--font-body-lg)] text-[length:var(--font-body-lg)] font-bold text-[var(--color-on-surface)] mt-1">
@@ -148,7 +148,7 @@ export default function MedicalSummaryPage() {
                     className="w-full bg-[var(--color-surface-bright)] border border-[var(--color-outline-variant)] rounded-xl p-3 text-[var(--color-on-surface)] focus:ring-1 focus:ring-[var(--color-primary)] focus:outline-none"
                     rows={2}
                   />
-                  <div className="flex gap-4">
+                  <div className="flex flex-col sm:flex-row gap-4">
                     <button 
                       onClick={() => submitFeedback('positive')} 
                       className="flex-1 flex items-center justify-center gap-2 h-10 rounded-xl bg-[var(--color-surface-container)] hover:bg-[var(--color-surface-container-high)] border border-[var(--color-outline-variant)]"
