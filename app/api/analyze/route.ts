@@ -56,7 +56,7 @@ export async function POST(req: Request) {
       Respond ONLY with the JSON object. Do not include markdown code blocks. Ensure all text is translated to the requested language (except JSON keys and urgencyLevel values which must remain as specified).
     `;
 
-    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent`;
+    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent`;
     
     console.log(`Gemini API request started: POST ${geminiUrl}`);
 
