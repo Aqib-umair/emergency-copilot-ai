@@ -93,19 +93,37 @@ export async function POST(req: Request) {
     const responseData = await response.json();
     console.log("Gemini Response body (Success):", JSON.stringify(responseData));
 
-    let jsonResponse = responseData.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    let rawText = responseData.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    console.log("Raw Gemini Response text:", rawText);
+
+    let jsonResponse = rawText.trim();
     
-    if (jsonResponse.startsWith('```json')) {
-      jsonResponse = jsonResponse.replace(/```json\n/, '').replace(/\n```$/, '');
+    // Attempt to extract JSON from markdown or raw text
+    const match = jsonResponse.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
+    if (match && match[1]) {
+      jsonResponse = match[1].trim();
+    } else {
+      // Fallback: manually find first '{' and last '}'
+      const firstBrace = jsonResponse.indexOf('{');
+      const lastBrace = jsonResponse.lastIndexOf('}');
+      if (firstBrace !== -1 && lastBrace !== -1) {
+        jsonResponse = jsonResponse.substring(firstBrace, lastBrace + 1);
+      }
     }
 
     let parsedData;
     try {
       parsedData = JSON.parse(jsonResponse);
-    } catch (parseError) {
+    } catch (parseError: any) {
       console.error('Failed to parse Gemini JSON:', parseError);
+      console.error('Attempted to parse string:', jsonResponse);
       return NextResponse.json(
-        { success: false, message: 'Invalid AI response', error: 'Could not parse JSON from AI' },
+        { 
+          success: false, 
+          message: 'Invalid AI response', 
+          error: parseError?.message || 'Could not parse JSON from AI',
+          rawResponse: rawText
+        },
         { status: 500 }
       );
     }
