@@ -6,6 +6,19 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { patientDetails, emergencyDescription, language, caseId } = body;
 
+    // Validate Gemini API Key
+    const rawKey = process.env.GEMINI_API_KEY || '';
+    // Aggressively sanitize in case Vercel env variable has concatenated strings
+    const geminiKey = rawKey.split('\n')[0].trim().replace(/^"|"$/g, '');
+
+    if (!geminiKey) {
+      console.error("Gemini API key is not configured.");
+      return NextResponse.json(
+        { success: false, message: 'Gemini API key is not configured.' },
+        { status: 500 }
+      );
+    }
+
     const prompt = `
       You are an AI Emergency Assistant. Your role is to analyze the emergency description and provide guidance.
       IMPORTANT: This does not replace doctors or emergency services.
@@ -44,11 +57,14 @@ export async function POST(req: Request) {
     `;
 
     const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent`;
+    
+    console.log(`Gemini API request started: POST ${geminiUrl}`);
+
     const response = await fetch(geminiUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-goog-api-key': (process.env.GEMINI_API_KEY || '').split('\n')[0].trim().replace(/^"|"$/g, '')
+        'x-goog-api-key': geminiKey
       },
       body: JSON.stringify({
         contents: [{ role: 'user', parts: [{ text: prompt }] }],
@@ -58,11 +74,11 @@ export async function POST(req: Request) {
       })
     });
 
+    console.log(`Gemini HTTP status: ${response.status}`);
+
     if (!response.ok) {
       const errorBody = await response.text();
-
-      console.error("Gemini Status:", response.status);
-      console.error("Gemini Response:", errorBody);
+      console.error("Gemini Response body (Error):", errorBody);
 
       return NextResponse.json(
         {
@@ -75,9 +91,10 @@ export async function POST(req: Request) {
     }
 
     const responseData = await response.json();
+    console.log("Gemini Response body (Success):", JSON.stringify(responseData));
+
     let jsonResponse = responseData.candidates?.[0]?.content?.parts?.[0]?.text || '';
     
-    // In case there are markdown tags despite the prompt and mimeType
     if (jsonResponse.startsWith('```json')) {
       jsonResponse = jsonResponse.replace(/```json\n/, '').replace(/\n```$/, '');
     }
@@ -100,20 +117,13 @@ export async function POST(req: Request) {
           urgency_level: parsedData.urgencyLevel,
           confidence_score: parsedData.confidenceScore || null
         };
-        console.log("Inserting payload into emergency_reports:", payload);
 
         const { error: insertError } = await supabase
           .from('emergency_reports')
           .insert([payload]);
           
         if (insertError) {
-          console.error("Supabase Insert Error (emergency_reports):", JSON.stringify(insertError, null, 2));
-          console.error("Error message:", insertError?.message);
-          console.error("Error details:", insertError?.details);
-          console.error("Error hint:", insertError?.hint);
-          console.error("Error code:", insertError?.code);
-        } else {
-          console.log('Successfully inserted emergency_reports row.');
+          console.error("Supabase Insert Error:", JSON.stringify(insertError, null, 2));
         }
       } catch (err: any) {
         console.error('Unexpected error inserting into emergency_reports:', err?.message || err);
@@ -122,7 +132,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json(parsedData);
   } catch (error: any) {
-    console.error('Gemini API Error:', error);
+    console.error('Unexpected Error:', error);
     return NextResponse.json(
       { success: false, message: 'Failed to analyze emergency.', error: error.message || 'Unknown error' },
       { status: 500 }
