@@ -1,3 +1,4 @@
+
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
@@ -30,13 +31,13 @@ interface EmergencyState {
 
   patientDetails: PatientDetails;
   setPatientDetails: (details: Partial<PatientDetails>) => void;
-  
+
   emergencyDescription: string;
   setEmergencyDescription: (desc: string) => void;
-  
+
   aiResults: AIAnalysisResult | null;
   setAiResults: (results: AIAnalysisResult) => void;
-  
+
   resetEmergency: () => void;
 }
 
@@ -60,23 +61,23 @@ export const useEmergencyStore = create<EmergencyState>()(
       setCaseId: (id) => set({ caseId: id }),
 
       patientDetails: initialPatientDetails,
-      setPatientDetails: (details) => 
-        set((state) => ({ 
-          patientDetails: { ...state.patientDetails, ...details } 
+      setPatientDetails: (details) =>
+        set((state) => ({
+          patientDetails: { ...state.patientDetails, ...details }
         })),
-        
+
       emergencyDescription: '',
       setEmergencyDescription: (desc) => set({ emergencyDescription: desc }),
-      
+
       aiResults: null,
       setAiResults: (results) => set({ aiResults: results }),
-      
-      resetEmergency: () => set({ 
+
+      resetEmergency: () => set({
         sessionId: null,
         caseId: null,
-        patientDetails: initialPatientDetails, 
-        emergencyDescription: '', 
-        aiResults: null 
+        patientDetails: initialPatientDetails,
+        emergencyDescription: '',
+        aiResults: null
       }),
     }),
     {

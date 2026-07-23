@@ -59,9 +59,19 @@ export async function POST(req: Request) {
     });
 
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Gemini API Error:', errorText);
-      throw new Error(`Gemini API failed with status: ${response.status}`);
+      const errorBody = await response.text();
+
+      console.error("Gemini Status:", response.status);
+      console.error("Gemini Response:", errorBody);
+
+      return NextResponse.json(
+        {
+          success: false,
+          status: response.status,
+          gemini: errorBody
+        },
+        { status: response.status }
+      );
     }
 
     const responseData = await response.json();
