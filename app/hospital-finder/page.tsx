@@ -16,10 +16,13 @@ export default function HospitalFinderPage() {
   const [hospitals, setHospitals] = useState<any[]>([]);
   const [location, setLocation] = useState<[number, number] | null>(null);
   const [loading, setLoading] = useState(true);
+  const [geoError, setGeoError] = useState<string | null>(null);
   const caseId = useEmergencyStore((state) => state.caseId);
 
   const fetchHospitals = useCallback(async (lat: number, lon: number) => {
+    console.log("Fetching hospitals for coordinates:", lat, lon);
     setLoading(true);
+    setGeoError(null);
     const cacheKey = `hospitals_${lat.toFixed(2)}_${lon.toFixed(2)}`;
     const cached = sessionStorage.getItem(cacheKey);
     
@@ -28,28 +31,46 @@ export default function HospitalFinderPage() {
         const parsed = JSON.parse(cached);
         setHospitals(parsed);
         setLoading(false);
+        console.log("Loaded hospitals from cache");
         return;
       } catch (e) {
-        // Fallback if parsing fails
+        console.warn("Failed to parse cached hospitals", e);
       }
     }
 
     const query = `
-      [out:json];
+      [out:json][timeout:25];
       (
-        node["amenity"="hospital"](around:5000, ${lat}, ${lon});
-        way["amenity"="hospital"](around:5000, ${lat}, ${lon});
-        relation["amenity"="hospital"](around:5000, ${lat}, ${lon});
+        node["amenity"~"hospital|clinic"](around:5000, ${lat}, ${lon});
+        way["amenity"~"hospital|clinic"](around:5000, ${lat}, ${lon});
+        relation["amenity"~"hospital|clinic"](around:5000, ${lat}, ${lon});
+        node["healthcare"~"hospital|clinic|centre"](around:5000, ${lat}, ${lon});
+        way["healthcare"~"hospital|clinic|centre"](around:5000, ${lat}, ${lon});
+        relation["healthcare"~"hospital|clinic|centre"](around:5000, ${lat}, ${lon});
+        node["emergency"="yes"](around:5000, ${lat}, ${lon});
+        way["emergency"="yes"](around:5000, ${lat}, ${lon});
+        relation["emergency"="yes"](around:5000, ${lat}, ${lon});
       );
       out center;
     `;
     const url = `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`;
     
     try {
+      console.log("Executing Overpass API fetch...");
       const res = await fetch(url);
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
       const text = await res.text();
-      let data = JSON.parse(text);
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch (e) {
+        throw new Error("Invalid JSON response from Overpass API");
+      }
       
+      console.log("Overpass API returned:", data.elements?.length || 0, "elements");
+
       const getDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
         const R = 6371;
         const dLat = (lat2 - lat1) * (Math.PI/180);
@@ -62,7 +83,8 @@ export default function HospitalFinderPage() {
         return R * c; 
       };
 
-      if (!data || !data.elements) {
+      if (!data || !data.elements || data.elements.length === 0) {
+        console.log("No hospitals found in the radius.");
         setHospitals([]);
         return;
       }
@@ -71,22 +93,35 @@ export default function HospitalFinderPage() {
         const hLat = el.lat || el.center?.lat;
         const hLon = el.lon || el.center?.lon;
         const dist = hLat && hLon ? getDistance(lat, lon, hLat, hLon) : 999;
+        
+        let name = el.tags?.name || el.tags?.['name:en'] || 'Unknown Medical Facility';
+        
         return {
           id: el.id,
-          name: el.tags?.name || 'Unknown Hospital',
+          name: name,
           lat: hLat,
           lon: hLon,
           tags: el.tags,
           distance: dist
         };
-      }).filter((h: any) => h.lat && h.lon);
+      }).filter((h: any) => h.lat && h.lon && h.name !== 'Unknown Medical Facility');
 
+      // Sort by distance
       results.sort((a: any, b: any) => (a.distance || 0) - (b.distance || 0));
-      setHospitals(results);
-      sessionStorage.setItem(cacheKey, JSON.stringify(results));
       
-      if (caseId && results.length > 0) {
-        const payload = results.map((h: any) => ({
+      // Deduplicate by name and approximate location
+      const uniqueResults = results.filter((h: any, index: number, self: any[]) => 
+        index === self.findIndex((t) => (
+          t.name === h.name
+        ))
+      );
+
+      console.log("Final processed unique hospitals:", uniqueResults.length);
+      setHospitals(uniqueResults);
+      sessionStorage.setItem(cacheKey, JSON.stringify(uniqueResults));
+      
+      if (caseId && uniqueResults.length > 0) {
+        const payload = uniqueResults.map((h: any) => ({
           patient_case_id: caseId,
           hospital_name: h.name,
           latitude: h.lat,
@@ -97,30 +132,46 @@ export default function HospitalFinderPage() {
           if (error) console.error("Supabase Insert Error (hospital_searches):", error);
         });
       }
-    } catch (error) {
-      console.warn("Failed to fetch hospitals", error);
+    } catch (error: any) {
+      console.error("Failed to fetch hospitals:", error);
+      setGeoError(`Failed to fetch hospitals: ${error.message}`);
     } finally {
       setLoading(false);
     }
   }, [caseId]);
 
-  useEffect(() => {
+  const requestLocation = useCallback(() => {
+    setLoading(true);
+    setGeoError(null);
     if (navigator.geolocation) {
+      console.log("Requesting browser geolocation...");
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
+          console.log("Geolocation successful:", latitude, longitude);
           setLocation([latitude, longitude]);
           fetchHospitals(latitude, longitude);
         },
         (error) => {
-          console.error("Error getting location", error);
+          console.error("Error getting location:", error);
+          let errorMessage = "Unknown location error";
+          if (error.code === 1) errorMessage = "Location permission denied. Please enable location services in your browser settings.";
+          else if (error.code === 2) errorMessage = "Location unavailable. Please check your signal or network.";
+          else if (error.code === 3) errorMessage = "Location request timed out. Please try again.";
+          setGeoError(errorMessage);
           setLoading(false);
-        }
+        },
+        { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
       );
     } else {
+      setGeoError("Geolocation is not supported by this browser.");
       setLoading(false);
     }
   }, [fetchHospitals]);
+
+  useEffect(() => {
+    requestLocation();
+  }, [requestLocation]);
 
   const topHospitals = useMemo(() => hospitals.slice(0, 5), [hospitals]);
 
@@ -129,8 +180,17 @@ export default function HospitalFinderPage() {
       
       {/* Map Section */}
       <div className="absolute inset-0 z-0 md:relative md:w-2/3 md:h-full lg:w-3/4">
-        {location ? (
+        {location && !geoError ? (
           <HospitalMap location={location} hospitals={hospitals} />
+        ) : geoError ? (
+          <div className="w-full h-full flex items-center justify-center bg-[var(--color-surface-variant)] text-[var(--color-on-surface-variant)] flex-col gap-4 p-6 text-center">
+            <span className="material-symbols-outlined text-[64px] text-[var(--color-error)]">location_disabled</span>
+            <p className="font-bold text-[var(--color-error)] text-lg max-w-md">{geoError}</p>
+            <button onClick={requestLocation} className="mt-4 px-8 py-3 bg-[var(--color-primary)] text-[var(--color-on-primary)] rounded-full font-bold shadow-md hover:bg-[var(--color-primary-container)] hover:text-[var(--color-on-primary-container)] transition-colors flex items-center gap-2">
+              <span className="material-symbols-outlined">refresh</span>
+              Retry Location
+            </button>
+          </div>
         ) : (
           <div className="w-full h-full flex items-center justify-center bg-[var(--color-surface-variant)] text-[var(--color-on-surface-variant)] flex-col gap-4">
             <span className="material-symbols-outlined text-[48px] animate-spin text-[var(--color-primary)]">progress_activity</span>
@@ -139,9 +199,9 @@ export default function HospitalFinderPage() {
         )}
         
         {/* Search & Filters Overlay (Floating on map) */}
-        <div className="absolute top-4 left-0 w-full z-20 px-[var(--spacing-margin-mobile)] md:px-6 flex flex-col gap-[var(--spacing-stack-sm)] md:max-w-md">
+        <div className="absolute top-4 left-0 w-full z-20 px-[var(--spacing-margin-mobile)] md:px-6 flex flex-col gap-[var(--spacing-stack-sm)] md:max-w-md pointer-events-none">
           {/* Search Bar */}
-          <div className="bg-[var(--color-surface)] rounded-xl shadow-md border border-[var(--color-outline-variant)] flex items-center h-[56px] px-4">
+          <div className="bg-[var(--color-surface)] rounded-xl shadow-md border border-[var(--color-outline-variant)] flex items-center h-[56px] px-4 pointer-events-auto">
             <span className="material-symbols-outlined text-[var(--color-outline)] mr-3">search</span>
             <input 
               className="flex-1 bg-transparent border-none focus:ring-0 font-[family-name:var(--font-body-md)] text-[var(--color-on-surface)] placeholder:text-[var(--color-outline)] p-0 outline-none" 
@@ -154,13 +214,14 @@ export default function HospitalFinderPage() {
           </div>
           
           {/* Filter Chips */}
-          <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+          <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide pointer-events-auto">
+            <button onClick={requestLocation} className="whitespace-nowrap px-4 h-10 rounded-full bg-[var(--color-surface)] text-[var(--color-on-surface)] font-[family-name:var(--font-label-md)] text-[length:var(--font-label-md)] flex items-center gap-2 border border-[var(--color-outline-variant)] hover:bg-[var(--color-surface-container-high)] transition-colors shadow-sm">
+              <span className="material-symbols-outlined text-[18px]">my_location</span>
+              Refresh
+            </button>
             <button className="whitespace-nowrap px-4 h-10 rounded-full bg-[var(--color-primary-container)] text-[var(--color-on-primary-container)] font-[family-name:var(--font-label-md)] text-[length:var(--font-label-md)] font-semibold flex items-center gap-2 border border-[var(--color-primary-container)] shadow-sm">
               <span className="material-symbols-outlined text-[18px]">done</span>
               All Medical
-            </button>
-            <button className="whitespace-nowrap px-4 h-10 rounded-full bg-[var(--color-surface)] text-[var(--color-on-surface)] font-[family-name:var(--font-label-md)] text-[length:var(--font-label-md)] flex items-center gap-2 border border-[var(--color-outline-variant)] hover:bg-[var(--color-surface-container-high)] transition-colors shadow-sm">
-              Emergency
             </button>
           </div>
         </div>
@@ -195,6 +256,12 @@ export default function HospitalFinderPage() {
                   <div className="h-10 bg-[var(--color-surface-variant)] rounded-xl w-full"></div>
                 </div>
               ))
+            ) : geoError ? (
+               <div className="text-center p-8 text-[var(--color-on-surface-variant)]">
+                <span className="material-symbols-outlined text-[48px] mb-2 text-[var(--color-error)]">warning</span>
+                <p className="font-bold text-[var(--color-error)]">Unable to fetch hospitals.</p>
+                <p className="text-sm mt-2">{geoError}</p>
+              </div>
             ) : topHospitals.length > 0 ? (
               topHospitals.map((h, i) => {
                 const dist = h.distance || 0;
@@ -243,7 +310,8 @@ export default function HospitalFinderPage() {
             ) : (
               <div className="text-center p-8 text-[var(--color-on-surface-variant)]">
                 <span className="material-symbols-outlined text-[48px] mb-2 text-[var(--color-outline)]">location_off</span>
-                <p className="font-bold">No hospitals found nearby.</p>
+                <p className="font-bold">No medical facilities found nearby.</p>
+                <button onClick={requestLocation} className="mt-4 px-6 py-2 border border-[var(--color-outline)] text-[var(--color-on-surface)] rounded-full font-bold">Retry</button>
               </div>
             )}
           </div>
