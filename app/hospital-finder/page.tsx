@@ -57,7 +57,14 @@ export default function HospitalFinderPage() {
     
     try {
       console.log("Executing Overpass API fetch...");
-      const res = await fetch(url);
+      const res = await fetch(url).catch(err => {
+        throw new Error("Network request failed: " + err.message);
+      });
+      
+      if (!res) {
+        throw new Error("Received undefined response from fetch. Please check your connection or ad-blocker.");
+      }
+      
       if (!res.ok) {
         throw new Error(`HTTP error! status: ${res.status}`);
       }
@@ -173,7 +180,7 @@ export default function HospitalFinderPage() {
     requestLocation();
   }, [requestLocation]);
 
-  const topHospitals = useMemo(() => hospitals.slice(0, 5), [hospitals]);
+  const topHospitals = useMemo(() => hospitals, [hospitals]);
 
   return (
     <main className="flex-1 relative w-full h-[calc(100vh-var(--spacing-touch-target-min))] overflow-hidden flex flex-col md:flex-row pt-[var(--spacing-touch-target-min)]">
@@ -266,8 +273,8 @@ export default function HospitalFinderPage() {
               topHospitals.map((h, i) => {
                 const dist = h.distance || 0;
                 const distStr = dist < 1 ? `${(dist * 1000).toFixed(0)} m` : `${dist.toFixed(1)} km`;
-                const walkMin = Math.round((dist / 5) * 60);
-                const carMin = Math.round((dist / 40) * 60);
+                const carMin = Math.ceil((dist / 40) * 60);
+                const bikeMin = Math.ceil((dist / 15) * 60);
 
                 return (
                   <div key={h.id} className="bg-[var(--color-surface-bright)] border border-[var(--color-outline-variant)] rounded-2xl p-4 mb-4 shadow-sm relative overflow-hidden">
@@ -282,9 +289,18 @@ export default function HospitalFinderPage() {
                           <span>{distStr} away</span>
                         </div>
                       </div>
-                      <div className="text-right shrink-0">
-                        <div className="font-[family-name:var(--font-label-lg)] text-[length:var(--font-label-lg)] text-[var(--color-on-surface)] font-bold">Est. Time</div>
-                        <div className="font-[family-name:var(--font-label-md)] text-[length:var(--font-label-md)] text-[var(--color-error)] font-black">{carMin} min</div>
+                      <div className="text-right shrink-0 flex flex-col items-end gap-1">
+                        <div className="font-[family-name:var(--font-label-md)] text-[length:var(--font-label-md)] text-[var(--color-on-surface)] font-bold">Est. Time</div>
+                        <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-1 text-[var(--color-error)] font-black text-sm" title="By Car">
+                            <span className="material-symbols-outlined text-[16px]">directions_car</span>
+                            {carMin}m
+                          </div>
+                          <div className="flex items-center gap-1 text-[var(--color-primary)] font-bold text-sm" title="By Bike">
+                            <span className="material-symbols-outlined text-[16px]">pedal_bike</span>
+                            {bikeMin}m
+                          </div>
+                        </div>
                       </div>
                     </div>
                     
