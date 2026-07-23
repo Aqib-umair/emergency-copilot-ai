@@ -19,6 +19,11 @@ export async function POST(req: Request) {
       );
     }
 
+    const first8 = geminiKey.substring(0, 8);
+    const last4 = geminiKey.substring(geminiKey.length - 4);
+    console.log(`Using API Key: ${first8}...${last4}`);
+
+
     const prompt = `
       You are an AI Emergency Assistant. Your role is to analyze the emergency description and provide guidance.
       IMPORTANT: This does not replace doctors or emergency services.
