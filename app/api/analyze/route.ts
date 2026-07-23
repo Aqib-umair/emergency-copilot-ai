@@ -1,28 +1,29 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '../../../lib/supabaseClient';
+import OpenAI from 'openai';
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
     const { patientDetails, emergencyDescription, language, caseId } = body;
 
-    // Validate Gemini API Key
-    const rawKey = process.env.GEMINI_API_KEY || '';
+    // Validate OpenRouter API Key
+    const rawKey = process.env.OPENROUTER_API_KEY || '';
     // Aggressively sanitize in case Vercel env variable has concatenated strings
-    const geminiKey = rawKey.split('\n')[0].trim().replace(/^"|"$/g, '');
+    const openRouterKey = rawKey.split('\n')[0].trim().replace(/^"|"$/g, '');
 
-    if (!geminiKey) {
-      console.error("Gemini API key is not configured.");
+    if (!openRouterKey) {
+      console.error("OpenRouter API key is not configured.");
       return NextResponse.json(
-        { success: false, message: 'Gemini API key is not configured.' },
+        { success: false, message: 'OpenRouter API key is not configured.' },
         { status: 500 }
       );
     }
 
-    const first8 = geminiKey.substring(0, 8);
-    const last4 = geminiKey.substring(geminiKey.length - 4);
-    console.log(`Using API Key: ${first8}...${last4}`);
-
+    const openai = new OpenAI({
+      baseURL: "https://openrouter.ai/api/v1",
+      apiKey: openRouterKey,
+    });
 
     const prompt = `
       You are an AI Emergency Assistant. Your role is to analyze the emergency description and provide guidance.
@@ -61,45 +62,17 @@ export async function POST(req: Request) {
       Respond ONLY with the JSON object. Do not include markdown code blocks. Ensure all text is translated to the requested language (except JSON keys and urgencyLevel values which must remain as specified).
     `;
 
-    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent`;
-    
-    console.log(`Gemini API request started: POST ${geminiUrl}`);
+    console.log("OpenRouter API request started using model: qwen/qwen3-32b");
 
-    const response = await fetch(geminiUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-goog-api-key': geminiKey
-      },
-      body: JSON.stringify({
-        contents: [{ role: 'user', parts: [{ text: prompt }] }],
-        generationConfig: {
-          responseMimeType: 'application/json'
-        }
-      })
+    const completion = await openai.chat.completions.create({
+      model: "qwen/qwen3-32b",
+      messages: [
+        { role: "user", content: prompt }
+      ]
     });
 
-    console.log(`Gemini HTTP status: ${response.status}`);
-
-    if (!response.ok) {
-      const errorBody = await response.text();
-      console.error("Gemini Response body (Error):", errorBody);
-
-      return NextResponse.json(
-        {
-          success: false,
-          status: response.status,
-          gemini: errorBody
-        },
-        { status: response.status }
-      );
-    }
-
-    const responseData = await response.json();
-    console.log("Gemini Response body (Success):", JSON.stringify(responseData));
-
-    let rawText = responseData.candidates?.[0]?.content?.parts?.[0]?.text || '';
-    console.log("Raw Gemini Response text:", rawText);
+    const rawText = completion.choices[0]?.message?.content || '';
+    console.log("Raw OpenRouter Response text:", rawText);
 
     let jsonResponse = rawText.trim();
     
@@ -120,7 +93,7 @@ export async function POST(req: Request) {
     try {
       parsedData = JSON.parse(jsonResponse);
     } catch (parseError: any) {
-      console.error('Failed to parse Gemini JSON:', parseError);
+      console.error('Failed to parse OpenRouter JSON:', parseError);
       console.error('Attempted to parse string:', jsonResponse);
       return NextResponse.json(
         { 
