@@ -11,7 +11,6 @@
 ![Geoapify](https://img.shields.io/badge/Maps-Geoapify-green)
 ![Leaflet](https://img.shields.io/badge/Leaflet-Interactive_Map-brightgreen)
 ![Supabase](https://img.shields.io/badge/Database-Supabase-3ECF8E)
-![License](https://img.shields.io/badge/License-MIT-blue)
 
 ---
 
