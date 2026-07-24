@@ -18,7 +18,7 @@ export async function POST(req: Request) {
     }
 
     // Geoapify Places API for healthcare facilities within 5000m (5km)
-    const categories = 'healthcare.hospital,healthcare.clinic';
+    const categories = 'healthcare.hospital,healthcare.pharmacy';
     const radius = 5000;
     const limit = 20;
     
