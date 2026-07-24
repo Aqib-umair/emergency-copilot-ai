@@ -11,10 +11,21 @@ const HospitalMap = dynamic(() => import('../../components/maps/HospitalMap'), {
   loading: () => <div className="w-full h-full flex items-center justify-center bg-[var(--color-surface-variant)] text-[var(--color-on-surface-variant)]">Loading Map...</div>
 });
 
-const getCategory = (name: string) => {
-  const lowerName = name.toLowerCase();
-  if (lowerName.includes('pharmacy') || lowerName.includes('chemist')) return 'pharmacies';
-  if (lowerName.includes('emergency') || lowerName.includes('urgent')) return 'emergency centres';
+const getCategory = (hospital: any) => {
+  const textToSearch = [
+    hospital.name,
+    hospital.address,
+    hospital.categories?.join(','),
+    hospital.datasource?.raw?.fclass,
+    hospital.datasource?.raw?.amenity,
+    hospital.formatted
+  ].filter(Boolean).join(' ').toLowerCase();
+
+  const pharmacyKeywords = ['pharmacy', 'medical store', 'medical shop', 'apollo pharmacy', 'medplus', 'wellness forever', 'drug store', 'chemist'];
+  const emergencyKeywords = ['government hospital', 'trauma centre', 'emergency centre', 'medical college hospital', 'district hospital', 'emergency', 'urgent', 'trauma'];
+
+  if (pharmacyKeywords.some(kw => textToSearch.includes(kw))) return 'pharmacies';
+  if (emergencyKeywords.some(kw => textToSearch.includes(kw))) return 'emergency centres';
   return 'hospitals';
 };
 
@@ -131,11 +142,11 @@ export default function HospitalFinderPage() {
 
   const topHospitals = useMemo(() => {
     if (activeFilter === 'All Medical') return hospitals;
-    return hospitals.filter(h => getCategory(h.name) === activeFilter.toLowerCase());
+    return hospitals.filter(h => getCategory(h) === activeFilter.toLowerCase());
   }, [hospitals, activeFilter]);
 
   return (
-    <main className="flex-1 relative w-full h-[calc(100vh-var(--spacing-touch-target-min))] overflow-hidden flex flex-col md:flex-row pt-[var(--spacing-touch-target-min)] bg-[var(--color-surface)]">
+    <main className="flex-1 relative w-full h-[100dvh] pt-[64px] md:pt-[72px] overflow-hidden flex flex-col md:flex-row bg-[var(--color-surface)]">
       
       {/* Map Section */}
       <div className="relative w-full basis-[60%] md:basis-[70%] md:flex-none z-0 flex flex-col">

@@ -21,10 +21,21 @@ interface HospitalMapProps {
   onHospitalSelect?: (id: string | number) => void;
 }
 
-const getCategory = (name: string) => {
-  const lower = name.toLowerCase();
-  if (lower.includes('pharmacy') || lower.includes('chemist') || lower.includes('apothecary')) return 'pharmacy';
-  if (lower.includes('emergency') || lower.includes('urgent') || lower.includes('trauma')) return 'emergency';
+const getCategory = (hospital: any) => {
+  const textToSearch = [
+    hospital.name,
+    hospital.address,
+    hospital.categories?.join(','),
+    hospital.datasource?.raw?.fclass,
+    hospital.datasource?.raw?.amenity,
+    hospital.formatted
+  ].filter(Boolean).join(' ').toLowerCase();
+
+  const pharmacyKeywords = ['pharmacy', 'medical store', 'medical shop', 'apollo pharmacy', 'medplus', 'wellness forever', 'drug store', 'chemist'];
+  const emergencyKeywords = ['government hospital', 'trauma centre', 'emergency centre', 'medical college hospital', 'district hospital', 'emergency', 'urgent', 'trauma'];
+
+  if (pharmacyKeywords.some(kw => textToSearch.includes(kw))) return 'pharmacy';
+  if (emergencyKeywords.some(kw => textToSearch.includes(kw))) return 'emergency';
   return 'hospital';
 };
 
@@ -56,15 +67,11 @@ const userIcon = createCustomIcon('#0ea5e9', 1.2); // blue for user
 function MapController({ location, hospitals, selectedHospitalId }: { location: [number, number], hospitals: Hospital[], selectedHospitalId?: string | number | null }) {
   const map = useMap();
   
-  // Fit bounds on mount
+  // Set exact view to user location
   useEffect(() => {
     if (!location) return;
-    const bounds = L.latLngBounds([location]);
-    hospitals.forEach(h => bounds.extend([h.lat, h.lon]));
-    if (bounds.isValid()) {
-      map.fitBounds(bounds, { padding: [50, 50], maxZoom: 15 });
-    }
-  }, [location, hospitals, map]); // Run once when hospitals load
+    map.setView(location, 14);
+  }, [location, map]);
 
   // Fly to selected hospital
   useEffect(() => {
@@ -158,7 +165,7 @@ const HospitalMap = React.memo(function HospitalMap({ location, hospitals, selec
               style={{ transform: `translateX(-${carouselIndex * 100}%)`, width: `${top5Hospitals.length * 100}%` }}
             >
               {top5Hospitals.map((h, i) => {
-                const category = getCategory(h.name);
+                const category = getCategory(h);
                 let iconName = 'local_hospital';
                 let bgLight = 'bg-red-100 text-red-600';
                 if (category === 'pharmacy') { iconName = 'local_pharmacy'; bgLight = 'bg-green-100 text-green-600'; }
@@ -250,7 +257,7 @@ const HospitalMap = React.memo(function HospitalMap({ location, hospitals, selec
         {/* Hospitals */}
         {hospitals.map(h => {
           const isSelected = selectedHospitalId === h.id;
-          const category = getCategory(h.name);
+          const category = getCategory(h);
           const color = getCategoryColor(category);
           
           const icon = createCustomIcon(color, isSelected ? 1.4 : 1.0, isSelected);
