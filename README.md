@@ -1,137 +1,274 @@
 # 🚑 Emergency Copilot AI
 
-> AI-powered emergency assistance that helps users make informed decisions in critical situations within seconds.
+> **AI-powered emergency response platform that provides intelligent first-aid guidance, real-time emergency facility discovery, and interactive medical assistance—all within seconds.**
 
 ![Status](https://img.shields.io/badge/Status-Active-success)
 ![Next.js](https://img.shields.io/badge/Next.js-15-black)
+![React](https://img.shields.io/badge/React-19-61DAFB)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)
-![Supabase](https://img.shields.io/badge/Database-Supabase-green)
-![Gemini](https://img.shields.io/badge/AI-Google%20Gemini-orange)
+![Tailwind CSS](https://img.shields.io/badge/TailwindCSS-4-38BDF8)
+![OpenRouter](https://img.shields.io/badge/AI-OpenRouter-purple)
+![Geoapify](https://img.shields.io/badge/Maps-Geoapify-green)
+![Leaflet](https://img.shields.io/badge/Leaflet-Interactive_Map-brightgreen)
+![Supabase](https://img.shields.io/badge/Database-Supabase-3ECF8E)
 ![License](https://img.shields.io/badge/License-MIT-blue)
 
 ---
 
-## 📖 Overview
+# 📖 Overview
 
-Emergency Copilot AI is an intelligent emergency response web application that provides rapid AI-powered assistance during medical emergencies.
+Emergency Copilot AI is a modern emergency assistance platform designed to help users during medical emergencies.
 
-Users can enter patient information and describe an emergency. The application analyzes the situation using Google Gemini AI, provides emergency guidance, stores emergency records securely in Supabase, and helps users locate nearby hospitals.
+The application combines Artificial Intelligence, live GPS, interactive maps, and emergency facility discovery to guide users from identifying a medical issue to locating the nearest appropriate healthcare provider.
 
-> ⚠️ This application is intended for informational purposes only and is **not a substitute for professional medical care.**
+The goal is to reduce response time by providing immediate guidance and helping users reach medical assistance faster.
+
+> **Disclaimer:** This application is intended for educational and informational purposes only and should not replace professional medical advice.
 
 ---
 
-# ✨ Features
+# ✨ Key Features
 
-- 🚨 One-click emergency workflow
-- 🤖 Google Gemini AI analysis
-- 🩺 Patient information management
-- 🏥 Nearby hospital search
-- 📋 Medical summary generation
-- 🌍 Multi-language support
-- 💾 Secure data storage with Supabase
-- 📱 Responsive mobile-friendly interface
-- ⚡ Fast deployment with Vercel
+## 🤖 AI Emergency Analysis
+
+- AI-powered emergency assessment
+- Intelligent first-aid guidance
+- Emergency recommendations
+- Medical summary generation
+
+---
+
+## 📍 Live GPS Detection
+
+- Automatic location detection
+- Live "You Are Here" marker
+- Accurate distance calculations
+- Dynamic map centering
+
+---
+
+## 🏥 Smart Hospital Finder
+
+- Nearby hospitals
+- Interactive maps
+- Live navigation
+- Emergency call support
+- Distance-based ranking
+
+---
+
+## 💊 Pharmacy Finder
+
+- Nearby pharmacy search
+- Automatic fallback search
+- Green pharmacy markers
+- Interactive pharmacy cards
+
+---
+
+## 🚑 Emergency Centre Finder
+
+- Government hospitals
+- Trauma centres
+- Emergency medical facilities
+- Medical colleges
+
+---
+
+## 🗺️ Interactive Emergency Map
+
+- React Leaflet integration
+- Custom animated markers
+- User location
+- Hospital markers
+- Pharmacy markers
+- Emergency centre markers
+- Auto-fit map bounds
+
+---
+
+## 🎠 Smart Nearby Carousel
+
+- Top 5 nearest facilities
+- Auto sliding
+- Manual navigation
+- Map synchronization
+- Sidebar synchronization
+
+---
+
+## 📱 Responsive Design
+
+Optimized for
+
+- Desktop
+- Tablet
+- Android
+- iOS
+
+Includes
+
+- Swipeable mobile interface
+- Responsive layout
+- Glassmorphism UI
+- Smooth animations
+
+---
+
+# 🚀 Complete User Flow
+
+```text
+Home
+
+↓
+
+Patient Details
+
+↓
+
+Emergency Description
+
+↓
+
+AI Emergency Analysis
+
+↓
+
+Hospital Finder
+
+↓
+
+Medical Summary
+
+↓
+
+Emergency Report
+```
+
+---
+
+# 🏗️ System Architecture
+
+```text
+                 User
+                  │
+                  ▼
+        Next.js Frontend
+                  │
+        ┌─────────┴─────────┐
+        │                   │
+        ▼                   ▼
+ OpenRouter AI        Geoapify Maps
+        │                   │
+        └─────────┬─────────┘
+                  │
+                  ▼
+          Next.js API Routes
+                  │
+                  ▼
+             Supabase DB
+                  │
+                  ▼
+          Emergency Reports
+```
 
 ---
 
 # 🛠 Tech Stack
 
-### Frontend
+## Frontend
 
-- Next.js
-- React
+- Next.js 15
+- React 19
 - TypeScript
 - Tailwind CSS
+- React Leaflet
 
-### Backend
+## Backend
 
 - Next.js API Routes
-- Google Gemini API
-- REST API Integration
+- REST APIs
 
-### Database
+## Artificial Intelligence
+
+- OpenRouter API
+- Large Language Models
+
+## Maps & Location
+
+- Geoapify Places API
+- OpenStreetMap
+- Overpass API (Pharmacy fallback)
+- Browser Geolocation API
+
+## Database
 
 - Supabase
 - PostgreSQL
 
-### Deployment
+## Deployment
 
 - Vercel
 
 ---
 
-# 🏗 Project Structure
+# 📂 Project Structure
 
-```
+```text
 app/
- ├── api/
- │    └── analyze/
- ├── patient-details/
- ├── emergency-description/
- ├── ai-analysis/
- ├── hospital-finder/
- ├── medical-summary/
-
+│
+├── api/
+│   ├── analyze/
+│   ├── hospitals/
+│
+├── patient-details/
+├── emergency-description/
+├── ai-analysis/
+├── hospital-finder/
+├── medical-summary/
+│
 components/
-store/
+hooks/
 lib/
+store/
+public/
 ```
 
 ---
 
-# 🔄 Application Flow
+# 💡 Technical Highlights
 
-```
-User
-   │
-   ▼
-Patient Details
-   │
-   ▼
-Emergency Description
-   │
-   ▼
-Gemini AI Analysis
-   │
-   ▼
-Nearby Hospitals
-   │
-   ▼
-Medical Summary
-   │
-   ▼
-Feedback
-```
-
----
-
-# 🗄 Database
-
-The application uses Supabase with the following tables:
-
-- patient_cases
-- emergency_reports
-- hospital_searches
-- feedback
+- AI-powered emergency workflow
+- Live GPS tracking
+- Interactive emergency map
+- Nearby hospital discovery
+- Pharmacy finder
+- Emergency centre filtering
+- Dynamic client-side filtering
+- Responsive mobile-first design
+- Animated UI components
+- Map ↔ Sidebar synchronization
+- Smart facility ranking
+- Google Maps navigation
+- Emergency call integration
 
 ---
 
 # 🔐 Environment Variables
 
-Create a `.env.local` file:
-
 ```env
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+OPENROUTER_API_KEY=
 
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+GEOAPIFY_API_KEY=
 
-GEMINI_API_KEY=your_gemini_api_key
+NEXT_PUBLIC_SUPABASE_URL=
+
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
 ```
 
 ---
 
-# 🚀 Installation
+# 🚀 Getting Started
 
 ```bash
 git clone https://github.com/Aqib-umair/emergency-copilot-ai.git
@@ -143,62 +280,62 @@ npm install
 npm run dev
 ```
 
----
-
-# 🚀 Production
-
-Build
+Production Build
 
 ```bash
 npm run build
-```
-
-Start
-
-```bash
 npm start
 ```
 
 ---
 
-# 📷 Screens
+# 📸 Screenshots
+
+Add screenshots for
 
 - Home
-- Patient Details
-- Emergency Description
 - AI Analysis
 - Hospital Finder
+- Interactive Map
+- Pharmacy Finder
+- Emergency Centres
+- Mobile View
 - Medical Summary
-- Feedback
-
-(Add screenshots here later.)
 
 ---
 
-# 🎯 Future Improvements
+# 🎯 Future Roadmap
 
-- Live GPS tracking
-- Ambulance integration
-- Voice emergency assistant
-- Offline mode
-- PDF emergency report
+- Voice-guided emergency assistance
+- Offline emergency mode
 - Emergency contacts
+- Ambulance tracking
+- Blood bank locator
+- Medical profile
+- Downloadable emergency reports (PDF)
 - Wearable device integration
 - Push notifications
-- AI follow-up recommendations
 
 ---
 
-# 👨‍💻 Author
+# 👨‍💻 Developer
 
 **Shaik Mohammed Aqib Umair**
 
-B.Tech Computer Science (AI & ML)
+B.Tech – Computer Science & Engineering (Artificial Intelligence & Machine Learning)
 
-India
+📍 India
 
-GitHub:
-https://github.com/Aqib-umair
+### Connect with Me
+
+- GitHub: https://github.com/Aqib-umair
+- LinkedIn: *(Add your LinkedIn profile)*
+- Portfolio: *(Add your portfolio if available)*
+
 ---
 
-⭐ If you like this project, please give it a star!
+# ⭐ Support
+
+If you found this project useful or interesting, please consider giving it a ⭐ on GitHub.
+
+It helps others discover the project and supports future development.
