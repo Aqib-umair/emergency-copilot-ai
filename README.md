@@ -288,21 +288,6 @@ npm start
 
 ---
 
-# 📸 Screenshots
-
-Add screenshots for
-
-- Home
-- AI Analysis
-- Hospital Finder
-- Interactive Map
-- Pharmacy Finder
-- Emergency Centres
-- Mobile View
-- Medical Summary
-
----
-
 # 🎯 Future Roadmap
 
 - Voice-guided emergency assistance
@@ -328,9 +313,7 @@ B.Tech – Computer Science & Engineering (Artificial Intelligence & Machine Lea
 ### Connect with Me
 
 - GitHub: https://github.com/Aqib-umair
-- LinkedIn: *(Add your LinkedIn profile)*
-- Portfolio: *(Add your portfolio if available)*
-
+- LinkedIn: https://www.linkedin.com/in/aqib-umair-md-s-26401928a/
 ---
 
 # ⭐ Support
