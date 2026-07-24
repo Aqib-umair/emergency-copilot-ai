@@ -154,8 +154,15 @@ export default function HospitalFinderPage() {
       const overpassQuery = `[out:json];node(around:5000,${lat},${lon})[amenity=pharmacy];out 15;`;
       const url = `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(overpassQuery)}`;
       
-      fetch(url)
-        .then(res => res.json())
+      const abortController = new AbortController();
+      const timeoutId = setTimeout(() => abortController.abort(), 8000);
+      const startTime = performance.now();
+
+      fetch(url, { signal: abortController.signal })
+        .then(res => {
+          if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+          return res.json();
+        })
         .then(data => {
           if (data.elements && data.elements.length > 0) {
             const newPharmacies = data.elements.map((el: any) => {
@@ -186,8 +193,15 @@ export default function HospitalFinderPage() {
             });
           }
         })
-        .catch(err => console.error("Overpass API error:", err))
-        .finally(() => setLoading(false));
+        .catch(err => {
+          console.error("Overpass API error:", err);
+          setGeoError("Unable to load nearby pharmacies. Please try again.");
+        })
+        .finally(() => {
+          clearTimeout(timeoutId);
+          setLoading(false);
+          console.log(`[Overpass API] Request duration: ${(performance.now() - startTime).toFixed(2)}ms`);
+        });
     }
   }, [activeFilter, topHospitals.length, location, loading, geoError]);
 
