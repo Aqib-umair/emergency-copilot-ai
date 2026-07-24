@@ -25,6 +25,9 @@ export async function POST(req: Request) {
     // Geoapify expects longitude first, then latitude in filter and bias
     const url = `https://api.geoapify.com/v2/places?categories=${categories}&filter=circle:${parsedLon},${parsedLat},${radius}&bias=proximity:${parsedLon},${parsedLat}&limit=${limit}&apiKey=${apiKey}`;
 
+    const maskedUrl = url.replace(/apiKey=[^&]+/, 'apiKey=MASKED');
+    console.log(`[DEBUG] Geoapify Request URL: ${maskedUrl}`);
+
     const response = await fetch(url, {
       method: 'GET',
       headers: {
@@ -33,7 +36,9 @@ export async function POST(req: Request) {
     });
 
     if (!response.ok) {
-      throw new Error(`Geoapify API responded with status: ${response.status}`);
+      const errorBody = await response.text();
+      console.error(`[DEBUG] Geoapify Response Body (Status ${response.status}):`, errorBody);
+      throw new Error(`Geoapify API responded with status: ${response.status}. Details: ${errorBody}`);
     }
 
     const data = await response.json();
