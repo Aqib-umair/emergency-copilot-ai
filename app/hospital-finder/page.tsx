@@ -145,6 +145,52 @@ export default function HospitalFinderPage() {
     return hospitals.filter(h => getCategory(h) === activeFilter.toLowerCase());
   }, [hospitals, activeFilter]);
 
+  // Frontend-triggered fetch for Pharmacies if none found in existing dataset
+  useEffect(() => {
+    if (activeFilter === 'Pharmacies' && topHospitals.length === 0 && location && !loading && !geoError) {
+      setLoading(true);
+      const [lat, lon] = location;
+      // Overpass API query for pharmacies within 5km
+      const overpassQuery = `[out:json];node(around:5000,${lat},${lon})[amenity=pharmacy];out 15;`;
+      const url = `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(overpassQuery)}`;
+      
+      fetch(url)
+        .then(res => res.json())
+        .then(data => {
+          if (data.elements && data.elements.length > 0) {
+            const newPharmacies = data.elements.map((el: any) => {
+              // Calculate distance in km
+              const R = 6371;
+              const dLat = (el.lat - lat) * (Math.PI / 180);
+              const dLon = (el.lon - lon) * (Math.PI / 180);
+              const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(lat * (Math.PI / 180)) * Math.cos(el.lat * (Math.PI / 180)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+              const dist = R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+              
+              return {
+                id: el.id,
+                name: el.tags?.name || 'Pharmacy',
+                lat: el.lat,
+                lon: el.lon,
+                distance: dist,
+                address: el.tags?.['addr:street'] ? `${el.tags['addr:street']} ${el.tags['addr:city'] || ''}` : '',
+                categories: ['healthcare.pharmacy'] // Add category to ensure getCategory matches
+              };
+            });
+            // Append, deduplicate by name+coords, and sort
+            setHospitals(prev => {
+              const combined = [...prev, ...newPharmacies];
+              const deduplicated = combined.filter((h: any, index: number, self: any[]) => 
+                index === self.findIndex((t) => t.name === h.name && t.lat === h.lat)
+              );
+              return deduplicated.sort((a, b) => (a.distance || 0) - (b.distance || 0));
+            });
+          }
+        })
+        .catch(err => console.error("Overpass API error:", err))
+        .finally(() => setLoading(false));
+    }
+  }, [activeFilter, topHospitals.length, location, loading, geoError]);
+
   return (
     <main className="flex-1 relative w-full h-[100dvh] pt-[64px] md:pt-[72px] overflow-hidden flex flex-col md:flex-row bg-[var(--color-surface)]">
       

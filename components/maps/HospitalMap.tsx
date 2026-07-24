@@ -159,10 +159,10 @@ const HospitalMap = React.memo(function HospitalMap({ location, hospitals, selec
           </div>
           
           {/* Carousel Track */}
-          <div className="relative h-[80px] w-full overflow-hidden">
+          <div className="relative w-full overflow-hidden">
             <div 
-              className="flex transition-transform duration-300 ease-out h-full"
-              style={{ transform: `translateX(-${carouselIndex * 100}%)`, width: `${top5Hospitals.length * 100}%` }}
+              className="flex transition-transform duration-300 ease-out"
+              style={{ transform: `translateX(-${(carouselIndex * 100) / top5Hospitals.length}%)`, width: `${top5Hospitals.length * 100}%` }}
             >
               {top5Hospitals.map((h, i) => {
                 const category = getCategory(h);
@@ -174,26 +174,52 @@ const HospitalMap = React.memo(function HospitalMap({ location, hospitals, selec
                 const dist = h.distance || 0;
                 const distStr = dist < 1 ? `${(dist * 1000).toFixed(0)} m` : `${dist.toFixed(1)} km`;
                 const rating = (4.0 + (h.id.toString().charCodeAt(0) % 10) / 10).toFixed(1);
+                const carMin = Math.ceil((dist / 40) * 60);
 
                 return (
                   <div 
                     key={h.id}
                     onClick={() => onHospitalSelect?.(h.id)}
-                    className="w-full shrink-0 flex items-center gap-3 p-3 cursor-pointer hover:bg-[var(--color-surface-container)] transition-colors"
+                    className="w-full shrink-0 flex flex-col gap-2 p-3 cursor-pointer hover:bg-[var(--color-surface-container)] transition-colors"
                     style={{ width: `${100 / top5Hospitals.length}%` }}
                   >
-                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 shadow-inner ${bgLight}`}>
-                      <span className="material-symbols-outlined text-[20px]">{iconName}</span>
-                    </div>
-                    <div className="flex-1 min-w-0 pr-1">
-                      <h4 className="font-bold text-sm text-[var(--color-on-surface)] line-clamp-1 leading-tight mb-1">{h.name}</h4>
-                      <div className="flex items-center gap-2 mt-0.5 text-[10px] font-bold">
-                        <span className="flex items-center text-amber-500">
-                          <span className="material-symbols-outlined text-[10px] mr-0.5">star</span>{rating}
-                        </span>
-                        <span className="text-[var(--color-outline)]">•</span>
-                        <span className="text-[var(--color-on-surface-variant)]">{distStr}</span>
+                    <div className="flex items-center gap-3">
+                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 shadow-inner ${bgLight}`}>
+                        <span className="material-symbols-outlined text-[20px]">{iconName}</span>
                       </div>
+                      <div className="flex-1 min-w-0 pr-1">
+                        <h4 className="font-bold text-sm text-[var(--color-on-surface)] line-clamp-1 leading-tight mb-1">{h.name}</h4>
+                        <div className="flex items-center gap-2 mt-0.5 text-[10px] font-bold">
+                          <span className="flex items-center text-amber-500">
+                            <span className="material-symbols-outlined text-[10px] mr-0.5">star</span>{rating}
+                          </span>
+                          <span className="text-[var(--color-outline)]">•</span>
+                          <span className="text-[var(--color-on-surface-variant)]">{distStr}</span>
+                          <span className="text-[var(--color-outline)]">•</span>
+                          <span className="text-[var(--color-on-surface-variant)] capitalize">{category}</span>
+                        </div>
+                      </div>
+                    </div>
+                    {/* Buttons */}
+                    <div className="flex gap-2 mt-1">
+                      <button 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          window.open(`https://www.google.com/maps/dir/?api=1&destination=${h.lat},${h.lon}`, '_blank');
+                        }}
+                        className="flex-1 bg-[var(--color-primary)] text-[var(--color-on-primary)] py-1.5 rounded-lg text-xs font-bold flex items-center justify-center gap-1 hover:opacity-90 transition-opacity"
+                      >
+                        <span className="material-symbols-outlined text-[14px]">directions</span> Navigate
+                      </button>
+                      <button 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          window.open('tel:112', '_self');
+                        }}
+                        className="flex-1 bg-[var(--color-surface-container-high)] text-[var(--color-on-surface)] py-1.5 rounded-lg text-xs font-bold flex items-center justify-center gap-1 hover:bg-[var(--color-outline-variant)] transition-colors border border-[var(--color-outline-variant)]"
+                      >
+                        <span className="material-symbols-outlined text-[14px]">call</span> Call
+                      </button>
                     </div>
                   </div>
                 );
