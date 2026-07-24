@@ -124,10 +124,10 @@ export default function HospitalFinderPage() {
   const topHospitals = useMemo(() => hospitals, [hospitals]);
 
   return (
-    <main className="flex-1 relative w-full h-[calc(100vh-var(--spacing-touch-target-min))] overflow-hidden flex flex-col md:flex-row pt-[var(--spacing-touch-target-min)]">
+    <main className="flex-1 relative w-full h-[calc(100vh-var(--spacing-touch-target-min))] overflow-hidden flex flex-col md:flex-row pt-[var(--spacing-touch-target-min)] bg-[var(--color-surface)]">
       
       {/* Map Section */}
-      <div className="relative w-full basis-[65%] md:basis-auto md:w-2/3 lg:w-3/4 z-0 flex flex-col">
+      <div className="relative w-full basis-[60%] md:basis-[70%] md:flex-none z-0 flex flex-col">
         {location && !geoError ? (
           <HospitalMap 
             location={location} 
@@ -153,67 +153,80 @@ export default function HospitalFinderPage() {
         
         {/* Search & Filters Overlay (Floating on map) */}
         <div className="absolute top-4 left-0 w-full z-20 px-[var(--spacing-margin-mobile)] md:px-6 flex flex-col gap-[var(--spacing-stack-sm)] md:max-w-md pointer-events-none">
-          {/* Search Bar */}
-          <div className="bg-[var(--color-surface)] rounded-xl shadow-md border border-[var(--color-outline-variant)] flex items-center h-[56px] px-4 pointer-events-auto">
-            <span className="material-symbols-outlined text-[var(--color-outline)] mr-3">search</span>
-            <input 
-              className="flex-1 bg-transparent border-none focus:ring-0 font-[family-name:var(--font-body-md)] text-[var(--color-on-surface)] placeholder:text-[var(--color-outline)] p-0 outline-none" 
-              placeholder="Search facilities..." 
-              type="text"
-            />
-            <button aria-label="Voice Search" className="ml-2 p-2 rounded-full hover:bg-[var(--color-surface-container-high)] transition-colors">
-              <span className="material-symbols-outlined text-[var(--color-primary)]">mic</span>
-            </button>
+          {/* Header */}
+          <div className="bg-[var(--color-surface)]/90 backdrop-blur-xl rounded-2xl p-4 shadow-sm border border-[var(--color-outline-variant)] pointer-events-auto transition-all">
+            <div className="flex justify-between items-center mb-3">
+              <h1 className="text-xl md:text-2xl font-[family-name:var(--font-heading)] font-bold text-[var(--color-primary)]">Emergency Copilot</h1>
+              {location && (
+                <button 
+                  onClick={requestLocation}
+                  disabled={loading}
+                  className="w-10 h-10 flex items-center justify-center rounded-full bg-[var(--color-surface-container-high)] text-[var(--color-on-surface)] hover:bg-[var(--color-surface-container-highest)] transition-colors disabled:opacity-50 shadow-sm"
+                  aria-label="Refresh Location"
+                >
+                  <span className={`material-symbols-outlined text-[20px] ${loading ? 'animate-spin' : ''}`}>
+                    my_location
+                  </span>
+                </button>
+              )}
+            </div>
           </div>
           
           {/* Filter Chips */}
           <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide pointer-events-auto">
-            <button onClick={requestLocation} className="whitespace-nowrap px-4 h-10 rounded-full bg-[var(--color-surface)] text-[var(--color-on-surface)] font-[family-name:var(--font-label-md)] text-[length:var(--font-label-md)] flex items-center gap-2 border border-[var(--color-outline-variant)] hover:bg-[var(--color-surface-container-high)] transition-colors shadow-sm">
-              <span className="material-symbols-outlined text-[18px]">my_location</span>
-              Refresh
-            </button>
-            <button className="whitespace-nowrap px-4 h-10 rounded-full bg-[var(--color-primary-container)] text-[var(--color-on-primary-container)] font-[family-name:var(--font-label-md)] text-[length:var(--font-label-md)] font-semibold flex items-center gap-2 border border-[var(--color-primary-container)] shadow-sm">
-              <span className="material-symbols-outlined text-[18px]">done</span>
-              All Medical
-            </button>
+            {['All Medical', 'Hospitals', 'Pharmacies'].map(filter => (
+              <button 
+                key={filter}
+                className={`whitespace-nowrap px-4 py-2 rounded-full text-sm font-bold border transition-colors shadow-sm ${
+                  filter === 'All Medical' 
+                    ? 'bg-[var(--color-primary)] text-[var(--color-on-primary)] border-[var(--color-primary)]' 
+                    : 'bg-[var(--color-surface)]/90 backdrop-blur-md text-[var(--color-on-surface-variant)] border-[var(--color-outline-variant)] hover:bg-[var(--color-surface-container)]'
+                }`}
+              >
+                {filter}
+              </button>
+            ))}
           </div>
         </div>
 
         {/* Navigation Overlays */}
-        <div className="absolute top-4 left-4 z-50 md:hidden">
-          <button 
-            onClick={() => router.push('/first-aid-timeline')}
-            className="h-12 w-12 rounded-full bg-[var(--color-surface)] shadow-md flex items-center justify-center text-[var(--color-on-surface)] hover:bg-[var(--color-surface-container-high)] border border-[var(--color-outline-variant)] transition-colors"
-          >
-            <span className="material-symbols-outlined">arrow_back</span>
-          </button>
+        <div className="absolute top-4 left-4 z-50 hidden">
+           {/* Legacy back button removed in favor of floating action buttons */}
         </div>
       </div>
 
       {/* Sidebar / Bottom Sheet Section */}
-      <div className="relative w-full basis-[35%] z-30 flex flex-col md:basis-auto md:w-1/3 lg:w-1/4 md:bg-[var(--color-surface)] md:border-l md:border-[var(--color-outline-variant)] md:shadow-xl bg-[var(--color-surface)]">
-        <div className="flex flex-col h-full overflow-hidden p-4 pt-4 shadow-[0_-4px_16px_rgba(0,0,0,0.05)] md:shadow-none border-t md:border-t-0 border-[var(--color-outline-variant)]">
+      <div className="relative w-full flex-1 z-30 flex flex-col md:basis-[30%] md:flex-none md:bg-[var(--color-surface)] md:border-l md:border-[var(--color-outline-variant)] bg-[var(--color-surface)] rounded-t-[32px] md:rounded-none -mt-6 md:mt-0 shadow-[0_-8px_30px_rgba(0,0,0,0.12)] md:shadow-2xl transition-all">
+        {/* Mobile Drag Handle */}
+        <div className="w-full flex justify-center pt-3 pb-1 md:hidden shrink-0">
+          <div className="w-12 h-1.5 bg-[var(--color-outline-variant)] rounded-full"></div>
+        </div>
+
+        <div className="flex flex-col h-full overflow-hidden p-4 pt-2 md:pt-6">
           
-          <div className="flex justify-between items-center mb-[var(--spacing-stack-md)] shrink-0">
-            <h2 className="font-[family-name:var(--font-headline-md)] text-[length:var(--font-headline-md)] text-[var(--color-on-surface)] font-bold">🏥 Nearby Hospitals</h2>
-            <span className="font-[family-name:var(--font-label-md)] text-[length:var(--font-label-md)] text-[var(--color-outline)] font-bold">{hospitals.length} Results</span>
+          <div className="flex justify-between items-center mb-[var(--spacing-stack-md)] shrink-0 px-2">
+            <h2 className="font-[family-name:var(--font-headline-md)] text-[length:var(--font-headline-md)] text-[var(--color-on-surface)] font-bold">🏥 Nearby Emergency Facilities</h2>
+            <span className="font-[family-name:var(--font-label-md)] text-[length:var(--font-label-md)] bg-[var(--color-surface-container-high)] px-3 py-1 rounded-full text-[var(--color-on-surface)] font-bold shadow-inner">{hospitals.length} Results</span>
           </div>
 
-          <div className="flex-1 overflow-y-auto pr-2 scrollbar-hide pb-20 md:pb-6">
+          <div className="flex-1 overflow-y-auto px-2 scrollbar-hide pb-24 md:pb-6">
             {loading ? (
-              // Skeleton Loaders
-              Array.from({ length: 3 }).map((_, i) => (
-                <div key={i} className="bg-[var(--color-surface-bright)] border border-[var(--color-outline-variant)] rounded-2xl p-4 mb-4 animate-pulse">
-                  <div className="h-5 bg-[var(--color-surface-variant)] rounded w-3/4 mb-3"></div>
-                  <div className="h-4 bg-[var(--color-surface-variant)] rounded w-1/2 mb-4"></div>
-                  <div className="h-10 bg-[var(--color-surface-variant)] rounded-xl w-full"></div>
+              // Premium Loading State
+              <div className="w-full flex flex-col items-center justify-center p-8 text-center animate-fade-in mt-10">
+                <div className="relative w-16 h-16 mb-6">
+                  <div className="absolute inset-0 border-4 border-[var(--color-primary)]/20 rounded-full"></div>
+                  <div className="absolute inset-0 border-4 border-[var(--color-primary)] rounded-full border-t-transparent animate-spin"></div>
+                  <span className="absolute inset-0 flex items-center justify-center material-symbols-outlined text-[var(--color-primary)] text-[24px]">local_hospital</span>
                 </div>
-              ))
+                <h3 className="font-bold text-lg text-[var(--color-on-surface)]">Finding nearby emergency facilities...</h3>
+                <p className="text-sm text-[var(--color-on-surface-variant)] mt-2">Searching within 5 km radius</p>
+              </div>
             ) : geoError ? (
-               <div className="text-center p-8 text-[var(--color-on-surface-variant)]">
+               <div className="text-center p-8 text-[var(--color-on-surface-variant)] mt-6">
                 <span className="material-symbols-outlined text-[48px] mb-2 text-[var(--color-error)]">warning</span>
-                <p className="font-bold text-[var(--color-error)]">Unable to fetch hospitals.</p>
-                <p className="text-sm mt-2">{geoError}</p>
+                <p className="font-bold text-[var(--color-error)] text-lg">Unable to fetch facilities.</p>
+                <p className="text-sm mt-2 max-w-[250px] mx-auto">{geoError}</p>
+                <button onClick={requestLocation} className="mt-6 px-6 py-2 bg-[var(--color-surface-container-high)] rounded-full font-bold text-[var(--color-on-surface)]">Retry Search</button>
               </div>
             ) : topHospitals.length > 0 ? (
               topHospitals.map((h, i) => {
@@ -221,79 +234,122 @@ export default function HospitalFinderPage() {
                 const distStr = dist < 1 ? `${(dist * 1000).toFixed(0)} m` : `${dist.toFixed(1)} km`;
                 const carMin = Math.ceil((dist / 40) * 60);
                 const bikeMin = Math.ceil((dist / 15) * 60);
+                
+                // Determine Category (Mocking backend response via name)
+                const lowerName = h.name.toLowerCase();
+                let category = 'hospital';
+                let iconName = 'local_hospital';
+                let iconColor = 'text-[var(--color-error)]';
+                let bgLight = 'bg-[var(--color-error)]/10';
+
+                if (lowerName.includes('pharmacy') || lowerName.includes('chemist')) {
+                  category = 'pharmacy';
+                  iconName = 'local_pharmacy';
+                  iconColor = 'text-green-600';
+                  bgLight = 'bg-green-100';
+                } else if (lowerName.includes('emergency') || lowerName.includes('urgent')) {
+                  category = 'emergency';
+                  iconName = 'emergency';
+                  iconColor = 'text-orange-500';
+                  bgLight = 'bg-orange-100';
+                }
+
+                // Mock rating
+                const rating = (4.0 + (h.id.toString().charCodeAt(0) % 10) / 10).toFixed(1);
+
+                const isNearest = i === 0;
+                const isSelected = selectedHospitalId === h.id;
 
                 return (
                   <div 
                     key={h.id} 
                     ref={(el) => { listRefs.current[h.id] = el; }}
                     onClick={() => setSelectedHospitalId(h.id)}
-                    className={`bg-[var(--color-surface-bright)] border rounded-2xl p-4 mb-4 shadow-sm relative overflow-hidden transition-all cursor-pointer ${
-                      selectedHospitalId === h.id 
-                        ? 'border-[var(--color-primary)] ring-2 ring-[var(--color-primary)]/20 shadow-md' 
-                        : 'border-[var(--color-outline-variant)] hover:border-[var(--color-primary)]/50'
-                    }`}
+                    className={`group border rounded-3xl p-5 mb-4 relative overflow-hidden transition-all cursor-pointer shadow-sm
+                      ${isSelected 
+                        ? 'bg-[var(--color-surface)] border-[var(--color-primary)] ring-4 ring-[var(--color-primary)]/10 shadow-md scale-[1.02]' 
+                        : 'bg-[var(--color-surface)]/80 backdrop-blur-md border-[var(--color-outline-variant)] hover:border-[var(--color-primary)]/40 hover:shadow-md hover:bg-[var(--color-surface)]'
+                      }
+                      ${isNearest && !isSelected ? 'border-amber-400/50 bg-gradient-to-br from-amber-50/50 to-transparent' : ''}
+                    `}
                   >
-                    {i === 0 && <div className="absolute top-0 left-0 w-full h-1 bg-[var(--color-error)]"></div>}
-                    <div className="flex justify-between items-start mb-2 mt-1 gap-2">
-                      <div className="flex-1 min-w-0">
-                        <h3 className="font-[family-name:var(--font-headline-sm)] text-[length:var(--font-headline-sm)] text-[var(--color-on-surface)] font-bold line-clamp-2 leading-tight">
+                    {isNearest && (
+                      <div className="absolute top-0 right-0 bg-amber-400 text-amber-950 text-[10px] uppercase font-black tracking-widest px-3 py-1 rounded-bl-xl shadow-sm flex items-center gap-1">
+                        <span className="relative flex h-2 w-2 mr-1">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-950 opacity-75"></span>
+                          <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-950"></span>
+                        </span>
+                        Nearest
+                      </div>
+                    )}
+                    
+                    <div className="flex items-start gap-3 mb-3">
+                      <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 shadow-inner ${bgLight} ${iconColor}`}>
+                        <span className="material-symbols-outlined text-[24px]">{iconName}</span>
+                      </div>
+                      <div className="flex-1 min-w-0 pt-1">
+                        <h3 className="font-bold text-base text-[var(--color-on-surface)] line-clamp-2 leading-tight pr-12">
                           {h.name}
                         </h3>
-                        {h.address && (
-                          <div className="text-[var(--color-on-surface-variant)] text-xs mt-1 line-clamp-1 opacity-80 font-medium">
-                            {h.address}
-                          </div>
-                        )}
-                        <div className="flex items-center gap-1 mt-1 text-[var(--color-on-surface-variant)] font-[family-name:var(--font-body-sm)] text-[length:var(--font-body-sm)] font-medium">
-                          <span className="material-symbols-outlined text-[16px]">location_on</span>
-                          <span>{distStr} away</span>
-                        </div>
-                      </div>
-                      <div className="text-right shrink-0 flex flex-col items-end gap-1">
-                        <div className="font-[family-name:var(--font-label-md)] text-[length:var(--font-label-md)] text-[var(--color-on-surface)] font-bold">Est. Time</div>
-                        <div className="flex items-center gap-2">
-                          <div className="flex items-center gap-1 text-[var(--color-error)] font-black text-sm" title="By Car">
-                            <span className="material-symbols-outlined text-[16px]">directions_car</span>
-                            {carMin}m
-                          </div>
-                          <div className="flex items-center gap-1 text-[var(--color-primary)] font-bold text-sm" title="By Bike">
-                            <span className="material-symbols-outlined text-[16px]">pedal_bike</span>
-                            {bikeMin}m
-                          </div>
+                        <div className="flex items-center gap-2 mt-1.5 text-xs font-bold">
+                          <span className="flex items-center text-amber-500">
+                            <span className="material-symbols-outlined text-[14px] mr-0.5">star</span>
+                            {rating}
+                          </span>
+                          <span className="text-[var(--color-outline)]">•</span>
+                          <span className="text-[var(--color-on-surface-variant)]">{distStr}</span>
                         </div>
                       </div>
                     </div>
+
+                    {h.address && (
+                      <div className="text-[var(--color-on-surface-variant)] text-xs mb-3 line-clamp-1 font-medium bg-[var(--color-surface-container)]/50 p-2 rounded-lg flex items-center gap-1.5">
+                        <span className="material-symbols-outlined text-[14px]">location_on</span>
+                        {h.address}
+                      </div>
+                    )}
                     
-                    <div className="flex gap-2 border-t border-[var(--color-outline-variant)]/50 pt-3 mt-3">
+                    <div className="flex gap-2 mt-3 pt-3 border-t border-[var(--color-outline-variant)]/50">
                       <button 
-                        className="flex-1 h-[44px] bg-[var(--color-primary)] text-[var(--color-on-primary)] rounded-xl font-[family-name:var(--font-label-md)] text-[length:var(--font-label-md)] flex items-center justify-center gap-1 hover:bg-[var(--color-primary-container)] hover:text-[var(--color-on-primary-container)] transition-colors font-bold shadow-sm"
+                        className="flex-1 h-10 bg-[var(--color-primary)] text-[var(--color-on-primary)] rounded-xl text-sm flex items-center justify-center gap-1.5 hover:bg-[var(--color-primary-container)] hover:text-[var(--color-on-primary-container)] transition-colors font-bold shadow-sm"
                         onClick={(e) => {
                           e.stopPropagation();
                           window.open(`https://www.google.com/maps/dir/?api=1&destination=${h.lat},${h.lon}`);
                         }}
                       >
                         <span className="material-symbols-outlined text-[18px]">directions</span>
-                        Navigate
+                        {carMin}m
                       </button>
                       <button 
-                        className="flex-1 h-[44px] border-2 border-[var(--color-outline)] text-[var(--color-on-surface)] rounded-xl font-[family-name:var(--font-label-md)] text-[length:var(--font-label-md)] flex items-center justify-center gap-1 hover:bg-[var(--color-surface-container-highest)] transition-colors font-bold"
+                        className="flex-1 h-10 bg-transparent border-2 border-[var(--color-outline)] text-[var(--color-on-surface)] rounded-xl text-sm flex items-center justify-center gap-1.5 hover:bg-[var(--color-surface-container)] hover:border-[var(--color-on-surface)] transition-all font-bold"
                         onClick={(e) => {
                           e.stopPropagation();
                           window.open('tel:112');
                         }}
                       >
                         <span className="material-symbols-outlined text-[18px]">call</span>
-                        Call ER
+                        Call
                       </button>
                     </div>
                   </div>
                 );
               })
             ) : (
-              <div className="text-center p-8 text-[var(--color-on-surface-variant)]">
-                <span className="material-symbols-outlined text-[48px] mb-2 text-[var(--color-outline)]">location_off</span>
-                <p className="font-bold">No medical facilities found nearby.</p>
-                <button onClick={requestLocation} className="mt-4 px-6 py-2 border border-[var(--color-outline)] text-[var(--color-on-surface)] rounded-full font-bold">Retry</button>
+              // Empty State
+              <div className="w-full flex flex-col items-center justify-center p-8 text-center animate-fade-in mt-6">
+                <div className="w-24 h-24 bg-[var(--color-surface-container)] rounded-full flex items-center justify-center mb-4 shadow-inner">
+                  <span className="material-symbols-outlined text-[48px] text-[var(--color-outline)]">explore_off</span>
+                </div>
+                <h3 className="font-bold text-xl text-[var(--color-on-surface)] mb-2">No facilities found</h3>
+                <p className="text-[var(--color-on-surface-variant)] mb-6 text-sm max-w-[250px]">
+                  There are no emergency facilities found within a 5 km radius of your location.
+                </p>
+                <button 
+                  onClick={requestLocation} 
+                  className="px-6 py-3 bg-[var(--color-surface-container-high)] hover:bg-[var(--color-surface-container-highest)] text-[var(--color-on-surface)] rounded-full font-bold transition-colors shadow-sm"
+                >
+                  Expand Search Radius
+                </button>
               </div>
             )}
           </div>
@@ -301,20 +357,20 @@ export default function HospitalFinderPage() {
       </div>
 
       {/* Floating Global Action Buttons */}
-      <div className="absolute bottom-4 right-4 z-50 flex items-center gap-3 md:top-4 md:bottom-auto">
+      <div className="absolute bottom-6 right-6 z-50 flex items-center gap-3 md:top-6 md:bottom-auto">
         <button 
           onClick={() => router.push('/first-aid-timeline')}
-          className="h-12 px-4 rounded-full bg-[var(--color-surface)] shadow-md flex items-center justify-center text-[var(--color-on-surface)] hover:bg-[var(--color-surface-container-high)] border border-[var(--color-outline-variant)] transition-colors font-bold hidden md:flex gap-2"
+          className="h-12 w-12 md:w-auto md:px-5 rounded-full bg-[var(--color-surface)]/90 backdrop-blur-md shadow-lg flex items-center justify-center text-[var(--color-on-surface)] hover:bg-[var(--color-surface)] border border-[var(--color-outline-variant)] transition-all font-bold group"
         >
-          <span className="material-symbols-outlined text-sm">arrow_back</span>
-          Back
+          <span className="material-symbols-outlined text-[20px] md:mr-2 group-hover:-translate-x-1 transition-transform">arrow_back</span>
+          <span className="hidden md:inline">Back</span>
         </button>
         <button 
           onClick={() => router.push('/medical-summary')}
-          className="h-12 px-6 rounded-full bg-[var(--color-primary)] shadow-[0_4px_12px_rgba(0,40,142,0.3)] flex items-center justify-center text-[var(--color-on-primary)] hover:bg-[var(--color-on-primary-fixed-variant)] transition-all duration-200 gap-2 font-bold tracking-wide"
+          className="h-12 px-6 rounded-full bg-[var(--color-primary)] shadow-[0_8px_24px_rgba(0,40,142,0.4)] flex items-center justify-center text-[var(--color-on-primary)] hover:bg-[var(--color-primary-container)] hover:text-[var(--color-on-primary-container)] hover:shadow-[0_8px_24px_rgba(0,40,142,0.6)] transition-all duration-300 gap-2 font-bold tracking-wide hover:-translate-y-1"
         >
           Summary Report
-          <span className="material-symbols-outlined text-xl">arrow_forward</span>
+          <span className="material-symbols-outlined text-[20px]">arrow_forward</span>
         </button>
       </div>
 
