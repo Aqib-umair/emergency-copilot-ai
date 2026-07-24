@@ -4,8 +4,11 @@ export async function POST(req: Request) {
   try {
     const { lat, lon } = await req.json();
 
-    if (!lat || !lon) {
-      return NextResponse.json({ success: false, message: 'Latitude and longitude are required.' }, { status: 400 });
+    const parsedLat = parseFloat(lat);
+    const parsedLon = parseFloat(lon);
+
+    if (isNaN(parsedLat) || isNaN(parsedLon)) {
+      return NextResponse.json({ success: false, message: 'Valid latitude and longitude are required.' }, { status: 400 });
     }
 
     const apiKey = process.env.GEOAPIFY_API_KEY;
@@ -15,12 +18,12 @@ export async function POST(req: Request) {
     }
 
     // Geoapify Places API for healthcare facilities within 5000m (5km)
-    const categories = 'healthcare.hospital,healthcare.clinic,healthcare.emergency_ward';
+    const categories = 'healthcare.hospital,healthcare.clinic';
     const radius = 5000;
     const limit = 20;
     
     // Geoapify expects longitude first, then latitude in filter and bias
-    const url = `https://api.geoapify.com/v2/places?categories=${categories}&filter=circle:${lon},${lat},${radius}&bias=proximity:${lon},${lat}&limit=${limit}&apiKey=${apiKey}`;
+    const url = `https://api.geoapify.com/v2/places?categories=${categories}&filter=circle:${parsedLon},${parsedLat},${radius}&bias=proximity:${parsedLon},${parsedLat}&limit=${limit}&apiKey=${apiKey}`;
 
     const response = await fetch(url, {
       method: 'GET',
