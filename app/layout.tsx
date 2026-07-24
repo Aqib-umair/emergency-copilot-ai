@@ -50,7 +50,7 @@ export default function RootLayout({
         <div id="google_translate_element"></div>
         <I18nProvider>
           <TopAppBar />
-          <div className="flex-1 mt-[72px] relative z-10 flex flex-col">
+          <div className="flex-1 pt-[calc(64px+env(safe-area-inset-top))] md:pt-[calc(72px+env(safe-area-inset-top))] relative z-10 flex flex-col w-full">
             {children}
           </div>
         </I18nProvider>

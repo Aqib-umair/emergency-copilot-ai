@@ -206,7 +206,7 @@ export default function HospitalFinderPage() {
   }, [activeFilter, topHospitals.length, location, loading, geoError]);
 
   return (
-    <main className="flex-1 relative w-full h-[100dvh] pt-[64px] md:pt-[72px] overflow-hidden flex flex-col md:flex-row bg-[var(--color-surface)]">
+    <main className="flex-1 relative w-full h-[calc(100dvh-64px-env(safe-area-inset-top))] md:h-[calc(100dvh-72px-env(safe-area-inset-top))] flex flex-col md:flex-row bg-[var(--color-surface)] overflow-hidden">
       
       {/* Map Section */}
       <div className="relative w-full basis-[60%] md:basis-[70%] md:flex-none z-0 flex flex-col">

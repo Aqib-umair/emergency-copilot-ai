@@ -96,7 +96,7 @@ export default function AiAnalysisLoadingPage() {
 
   if (hasError) {
     return (
-      <main className="bg-[var(--color-surface)] min-h-[calc(100vh-72px)] flex flex-col items-center justify-center relative overflow-hidden z-20 absolute top-0 left-0 w-full mt-[-72px] pt-[72px]">
+      <main className="bg-[var(--color-surface)] flex-1 flex flex-col items-center justify-center relative overflow-hidden z-20 w-full">
         <div className="z-10 w-full max-w-md px-[var(--spacing-margin-mobile)] md:px-[var(--spacing-margin-desktop)] flex flex-col items-center justify-center text-center">
           <div className="w-16 h-16 bg-[var(--color-error-container)] rounded-full flex items-center justify-center mb-4">
             <span className="material-symbols-outlined text-[32px] text-[var(--color-error)]">error</span>

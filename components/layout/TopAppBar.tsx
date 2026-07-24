@@ -21,7 +21,7 @@ export default function TopAppBar() {
   };
 
   return (
-    <header className="bg-[var(--color-surface)] dark:bg-[var(--color-surface-dim)] border-b border-[var(--color-outline-variant)] dark:border-[var(--color-outline)] shadow-sm dark:shadow-none fixed top-0 w-full z-50 flex justify-between items-center px-[var(--spacing-margin-mobile)] h-[var(--spacing-touch-target-min)]">
+    <header className="bg-[var(--color-surface)] dark:bg-[var(--color-surface-dim)] border-b border-[var(--color-outline-variant)] dark:border-[var(--color-outline)] shadow-sm dark:shadow-none fixed top-0 w-full z-50 flex justify-between items-center px-[var(--spacing-margin-mobile)] pt-[calc(0.5rem+env(safe-area-inset-top))] pb-2 min-h-[64px] md:min-h-[72px]">
       {/* Leading Icon: Language */}
       <div className="relative">
         <button 

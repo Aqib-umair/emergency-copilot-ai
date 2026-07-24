@@ -65,7 +65,7 @@ export default function PageTransition({
       )}
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col w-full h-full pb-24 pt-16">
+      <div className="flex-1 flex flex-col w-full h-full pb-24">
         {children}
       </div>
 
