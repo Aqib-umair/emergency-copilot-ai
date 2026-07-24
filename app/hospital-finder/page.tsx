@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import { supabase } from '../../lib/supabaseClient';
@@ -18,6 +18,14 @@ export default function HospitalFinderPage() {
   const [loading, setLoading] = useState(true);
   const [geoError, setGeoError] = useState<string | null>(null);
   const caseId = useEmergencyStore((state) => state.caseId);
+  const [selectedHospitalId, setSelectedHospitalId] = useState<string | number | null>(null);
+  const listRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
+
+  useEffect(() => {
+    if (selectedHospitalId && listRefs.current[selectedHospitalId]) {
+      listRefs.current[selectedHospitalId]?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  }, [selectedHospitalId]);
 
   const fetchHospitals = useCallback(async (lat: number, lon: number) => {
     setLoading(true);
@@ -119,9 +127,14 @@ export default function HospitalFinderPage() {
     <main className="flex-1 relative w-full h-[calc(100vh-var(--spacing-touch-target-min))] overflow-hidden flex flex-col md:flex-row pt-[var(--spacing-touch-target-min)]">
       
       {/* Map Section */}
-      <div className="absolute inset-0 z-0 md:relative md:w-2/3 md:h-full lg:w-3/4">
+      <div className="relative w-full h-[65%] md:w-2/3 md:h-full lg:w-3/4 z-0">
         {location && !geoError ? (
-          <HospitalMap location={location} hospitals={hospitals} />
+          <HospitalMap 
+            location={location} 
+            hospitals={hospitals} 
+            selectedHospitalId={selectedHospitalId}
+            onHospitalSelect={setSelectedHospitalId}
+          />
         ) : geoError ? (
           <div className="w-full h-full flex items-center justify-center bg-[var(--color-surface-variant)] text-[var(--color-on-surface-variant)] flex-col gap-4 p-6 text-center">
             <span className="material-symbols-outlined text-[64px] text-[var(--color-error)]">location_disabled</span>
@@ -178,11 +191,11 @@ export default function HospitalFinderPage() {
       </div>
 
       {/* Sidebar / Bottom Sheet Section */}
-      <div className="absolute bottom-0 left-0 w-full z-30 flex flex-col justify-end h-[60%] pointer-events-none md:relative md:h-full md:w-1/3 lg:w-1/4 md:pointer-events-auto md:bg-[var(--color-surface)] md:border-l md:border-[var(--color-outline-variant)] md:shadow-xl">
-        <div className="bg-[var(--color-surface)] rounded-t-3xl md:rounded-none shadow-[0_-8px_24px_rgba(0,0,0,0.1)] md:shadow-none border-t md:border-t-0 border-[var(--color-outline-variant)] p-4 pt-6 pointer-events-auto flex flex-col h-full overflow-hidden">
+      <div className="relative w-full h-[35%] z-30 flex flex-col md:h-full md:w-1/3 lg:w-1/4 md:bg-[var(--color-surface)] md:border-l md:border-[var(--color-outline-variant)] md:shadow-xl bg-[var(--color-surface)]">
+        <div className="flex flex-col h-full overflow-hidden p-4 pt-4 shadow-[0_-4px_16px_rgba(0,0,0,0.05)] md:shadow-none border-t md:border-t-0 border-[var(--color-outline-variant)]">
           
           <div className="flex justify-between items-center mb-[var(--spacing-stack-md)] shrink-0">
-            <h2 className="font-[family-name:var(--font-headline-md)] text-[length:var(--font-headline-md)] text-[var(--color-on-surface)] font-bold">Nearest Help</h2>
+            <h2 className="font-[family-name:var(--font-headline-md)] text-[length:var(--font-headline-md)] text-[var(--color-on-surface)] font-bold">🏥 Nearby Hospitals</h2>
             <span className="font-[family-name:var(--font-label-md)] text-[length:var(--font-label-md)] text-[var(--color-outline)] font-bold">{hospitals.length} Results</span>
           </div>
 
@@ -210,7 +223,16 @@ export default function HospitalFinderPage() {
                 const bikeMin = Math.ceil((dist / 15) * 60);
 
                 return (
-                  <div key={h.id} className="bg-[var(--color-surface-bright)] border border-[var(--color-outline-variant)] rounded-2xl p-4 mb-4 shadow-sm relative overflow-hidden">
+                  <div 
+                    key={h.id} 
+                    ref={(el) => { listRefs.current[h.id] = el; }}
+                    onClick={() => setSelectedHospitalId(h.id)}
+                    className={`bg-[var(--color-surface-bright)] border rounded-2xl p-4 mb-4 shadow-sm relative overflow-hidden transition-all cursor-pointer ${
+                      selectedHospitalId === h.id 
+                        ? 'border-[var(--color-primary)] ring-2 ring-[var(--color-primary)]/20 shadow-md' 
+                        : 'border-[var(--color-outline-variant)] hover:border-[var(--color-primary)]/50'
+                    }`}
+                  >
                     {i === 0 && <div className="absolute top-0 left-0 w-full h-1 bg-[var(--color-error)]"></div>}
                     <div className="flex justify-between items-start mb-2 mt-1 gap-2">
                       <div className="flex-1 min-w-0">
@@ -245,14 +267,20 @@ export default function HospitalFinderPage() {
                     <div className="flex gap-2 border-t border-[var(--color-outline-variant)]/50 pt-3 mt-3">
                       <button 
                         className="flex-1 h-[44px] bg-[var(--color-primary)] text-[var(--color-on-primary)] rounded-xl font-[family-name:var(--font-label-md)] text-[length:var(--font-label-md)] flex items-center justify-center gap-1 hover:bg-[var(--color-primary-container)] hover:text-[var(--color-on-primary-container)] transition-colors font-bold shadow-sm"
-                        onClick={() => window.open(`https://www.google.com/maps/dir/?api=1&destination=${h.lat},${h.lon}`)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          window.open(`https://www.google.com/maps/dir/?api=1&destination=${h.lat},${h.lon}`);
+                        }}
                       >
                         <span className="material-symbols-outlined text-[18px]">directions</span>
                         Navigate
                       </button>
                       <button 
                         className="flex-1 h-[44px] border-2 border-[var(--color-outline)] text-[var(--color-on-surface)] rounded-xl font-[family-name:var(--font-label-md)] text-[length:var(--font-label-md)] flex items-center justify-center gap-1 hover:bg-[var(--color-surface-container-highest)] transition-colors font-bold"
-                        onClick={() => window.open('tel:112')}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          window.open('tel:112');
+                        }}
                       >
                         <span className="material-symbols-outlined text-[18px]">call</span>
                         Call ER
