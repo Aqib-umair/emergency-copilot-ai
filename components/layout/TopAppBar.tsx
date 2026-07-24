@@ -21,39 +21,48 @@ export default function TopAppBar() {
   };
 
   return (
-    <header className="bg-[var(--color-surface)] dark:bg-[var(--color-surface-dim)] border-b border-[var(--color-outline-variant)] dark:border-[var(--color-outline)] shadow-sm dark:shadow-none fixed top-0 w-full z-50 flex justify-between items-center px-[var(--spacing-margin-mobile)] pt-[calc(0.5rem+env(safe-area-inset-top))] pb-2 min-h-[64px] md:min-h-[72px]">
-      {/* Leading Icon: Language */}
-      <div className="relative">
-        <button 
-          className="flex items-center justify-center gap-1 rounded-full px-3 py-2 hover:bg-[var(--color-surface-container-high)] dark:hover:bg-[var(--color-inverse-surface)] transition-colors text-[var(--color-primary)] dark:text-[var(--color-primary-fixed)]"
-          onClick={() => setDropdownOpen(!dropdownOpen)}
-        >
-          <span className="material-symbols-outlined">language</span>
-          <span className="font-[family-name:var(--font-label-md)] text-[length:var(--font-label-md)] font-bold">Language</span>
+    <header className="bg-[var(--color-surface)] dark:bg-[var(--color-surface-dim)] border-b border-[var(--color-outline-variant)] dark:border-[var(--color-outline)] shadow-sm dark:shadow-none fixed top-0 w-full z-50 flex flex-col md:flex-row md:justify-between md:items-center px-4 md:px-[var(--spacing-margin-mobile)] pt-[calc(0.5rem+env(safe-area-inset-top))] pb-2.5 md:pb-2 md:min-h-[72px]">
+      
+      {/* Mobile Top Row / Desktop Left */}
+      <div className="flex justify-between items-center w-full md:w-auto">
+        {/* Leading Icon: Language */}
+        <div className="relative">
+          <button 
+            className="flex items-center justify-center gap-1 rounded-full px-2 py-1 md:px-3 md:py-2 hover:bg-[var(--color-surface-container-high)] dark:hover:bg-[var(--color-inverse-surface)] transition-colors text-[var(--color-primary)] dark:text-[var(--color-primary-fixed)]"
+            onClick={() => setDropdownOpen(!dropdownOpen)}
+          >
+            <span className="material-symbols-outlined text-[20px] md:text-[24px]">language</span>
+            <span className="font-[family-name:var(--font-label-md)] text-[13px] md:text-[length:var(--font-label-md)] font-bold">Language</span>
+          </button>
+          
+          {dropdownOpen && (
+            <div className="absolute top-full left-0 mt-1 w-32 bg-[var(--color-surface-container-lowest)] rounded-lg shadow-lg border border-[var(--color-outline-variant)] flex flex-col overflow-hidden">
+              <button onClick={() => changeLanguage('en')} className="px-4 py-2 hover:bg-[var(--color-surface-container)] text-left text-[length:var(--font-body-md)] font-[family-name:var(--font-body-md)] cursor-pointer text-[var(--color-on-surface)]">English</button>
+              <button onClick={() => changeLanguage('hi')} className="px-4 py-2 hover:bg-[var(--color-surface-container)] text-left text-[length:var(--font-body-md)] font-[family-name:var(--font-body-md)] cursor-pointer text-[var(--color-on-surface)]">Hindi</button>
+              <button onClick={() => changeLanguage('te')} className="px-4 py-2 hover:bg-[var(--color-surface-container)] text-left text-[length:var(--font-body-md)] font-[family-name:var(--font-body-md)] cursor-pointer text-[var(--color-on-surface)]">Telugu</button>
+              <button onClick={() => changeLanguage('ta')} className="px-4 py-2 hover:bg-[var(--color-surface-container)] text-left text-[length:var(--font-body-md)] font-[family-name:var(--font-body-md)] cursor-pointer text-[var(--color-on-surface)]">Tamil</button>
+            </div>
+          )}
+        </div>
+
+        {/* Trailing Icon: Account (Mobile Only here) */}
+        <button className="md:hidden w-8 h-8 flex items-center justify-center rounded-full hover:bg-[var(--color-surface-container-high)] transition-colors text-[var(--color-primary)]">
+          <span className="material-symbols-outlined text-[22px]">account_circle</span>
         </button>
-        
-        {dropdownOpen && (
-          <div className="absolute top-full left-0 mt-1 w-32 bg-[var(--color-surface-container-lowest)] rounded-lg shadow-lg border border-[var(--color-outline-variant)] flex flex-col overflow-hidden">
-            <button onClick={() => changeLanguage('en')} className="px-4 py-2 hover:bg-[var(--color-surface-container)] text-left text-[length:var(--font-body-md)] font-[family-name:var(--font-body-md)] cursor-pointer text-[var(--color-on-surface)]">English</button>
-            <button onClick={() => changeLanguage('hi')} className="px-4 py-2 hover:bg-[var(--color-surface-container)] text-left text-[length:var(--font-body-md)] font-[family-name:var(--font-body-md)] cursor-pointer text-[var(--color-on-surface)]">Hindi</button>
-            <button onClick={() => changeLanguage('te')} className="px-4 py-2 hover:bg-[var(--color-surface-container)] text-left text-[length:var(--font-body-md)] font-[family-name:var(--font-body-md)] cursor-pointer text-[var(--color-on-surface)]">Telugu</button>
-            <button onClick={() => changeLanguage('ta')} className="px-4 py-2 hover:bg-[var(--color-surface-container)] text-left text-[length:var(--font-body-md)] font-[family-name:var(--font-body-md)] cursor-pointer text-[var(--color-on-surface)]">Tamil</button>
-          </div>
-        )}
       </div>
 
       {/* Headline */}
-      <div className="flex flex-col items-center justify-center">
-        <h1 className="font-[family-name:var(--font-headline-md)] text-[length:var(--font-headline-md)] font-bold text-black text-center drop-shadow-sm">
+      <div className="flex flex-col items-center justify-center mt-1.5 md:mt-0 flex-1 md:flex-none">
+        <h1 className="font-[family-name:var(--font-headline-md)] text-[15px] md:text-[length:var(--font-headline-md)] font-bold text-black text-center drop-shadow-sm leading-tight">
           {t('app.title', 'Emergency Copilot AI')}
         </h1>
-        <span className="text-[length:var(--font-label-md)] font-[family-name:var(--font-label-md)] text-black/80 mt-0.5 drop-shadow-sm">
+        <span className="text-[11px] md:text-[length:var(--font-label-md)] font-[family-name:var(--font-label-md)] text-black/80 mt-0.5 drop-shadow-sm whitespace-nowrap">
           {t('app.subtitle', 'Help in Seconds, Not Minutes')}
         </span>
       </div>
 
-      {/* Trailing Icon: Account */}
-      <button className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-[var(--color-surface-container-high)] dark:hover:bg-[var(--color-inverse-surface)] transition-colors text-[var(--color-primary)] dark:text-[var(--color-primary-fixed)]">
+      {/* Trailing Icon: Account (Desktop Only here) */}
+      <button className="hidden md:flex w-10 h-10 items-center justify-center rounded-full hover:bg-[var(--color-surface-container-high)] dark:hover:bg-[var(--color-inverse-surface)] transition-colors text-[var(--color-primary)] dark:text-[var(--color-primary-fixed)]">
         <span className="material-symbols-outlined">account_circle</span>
       </button>
     </header>
