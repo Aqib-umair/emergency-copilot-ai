@@ -8,139 +8,67 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, message: 'Latitude and longitude are required.' }, { status: 400 });
     }
 
-    const query = `
-      [out:json][timeout:15];
-      (
-        node["amenity"="hospital"](around:5000, ${lat}, ${lon});
-        way["amenity"="hospital"](around:5000, ${lat}, ${lon});
-        relation["amenity"="hospital"](around:5000, ${lat}, ${lon});
-        node["amenity"="clinic"](around:5000, ${lat}, ${lon});
-        way["amenity"="clinic"](around:5000, ${lat}, ${lon});
-        relation["amenity"="clinic"](around:5000, ${lat}, ${lon});
-        node["amenity"="doctors"](around:5000, ${lat}, ${lon});
-        way["amenity"="doctors"](around:5000, ${lat}, ${lon});
-        relation["amenity"="doctors"](around:5000, ${lat}, ${lon});
-        node["amenity"="pharmacy"](around:5000, ${lat}, ${lon});
-        way["amenity"="pharmacy"](around:5000, ${lat}, ${lon});
-        relation["amenity"="pharmacy"](around:5000, ${lat}, ${lon});
-        node["emergency"="yes"](around:5000, ${lat}, ${lon});
-        way["emergency"="yes"](around:5000, ${lat}, ${lon});
-        relation["emergency"="yes"](around:5000, ${lat}, ${lon});
-      );
-      out center;
-    `;
-
-    const overpassEndpoints = [
-      'https://overpass-api.de/api/interpreter',
-      'https://lz4.overpass-api.de/api/interpreter',
-      'https://z.overpass-api.de/api/interpreter'
-    ];
-
-    let data = null;
-
-    // Try Overpass mirrors
-    for (const endpoint of overpassEndpoints) {
-      try {
-        const response = await fetch(endpoint, {
-          method: 'POST',
-          body: `data=${encodeURIComponent(query)}`,
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          // Keep a reasonably short timeout for the fetch itself so we can failover quickly
-          signal: AbortSignal.timeout(8000)
-        });
-        
-        if (response.ok) {
-          data = await response.json();
-          break; // Success, exit retry loop
-        }
-      } catch (err) {
-        console.warn(`Overpass API failed on ${endpoint}:`, err);
-      }
+    const apiKey = process.env.GEOAPIFY_API_KEY;
+    if (!apiKey) {
+      console.error("GEOAPIFY_API_KEY is missing from environment variables.");
+      return NextResponse.json({ success: false, message: 'Server configuration error: Missing API key.' }, { status: 500 });
     }
 
-    // Helper to calculate distance
-    const getDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
-      const R = 6371;
-      const dLat = (lat2 - lat1) * (Math.PI / 180);
-      const dLon = (lon2 - lon1) * (Math.PI / 180);
-      const a =
-        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-        Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) *
-        Math.sin(dLon / 2) * Math.sin(dLon / 2);
-      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-      return R * c;
-    };
-
-    let normalizedResults: any[] = [];
-
-    if (data && data.elements && data.elements.length > 0) {
-      // Process Overpass data
-      normalizedResults = data.elements.map((el: any) => {
-        const hLat = el.lat || el.center?.lat;
-        const hLon = el.lon || el.center?.lon;
-        const dist = hLat && hLon ? getDistance(lat, lon, hLat, hLon) : 999;
-        
-        const tags = el.tags || {};
-        const name = tags.name || tags['name:en'] || 'Unknown Medical Facility';
-        
-        let address = '';
-        if (tags['addr:street']) {
-          address = `${tags['addr:housenumber'] ? tags['addr:housenumber'] + ' ' : ''}${tags['addr:street']}`;
-          if (tags['addr:city']) address += `, ${tags['addr:city']}`;
-        } else if (tags['addr:full']) {
-          address = tags['addr:full'];
-        }
-
-        return {
-          id: `overpass_${el.id}`,
-          name: name,
-          lat: hLat,
-          lon: hLon,
-          distance: dist,
-          address: address
-        };
-      });
-    } else {
-      // Nominatim Fallback
-      console.warn("All Overpass endpoints failed or returned empty. Falling back to Nominatim.");
-      try {
-        const nominatimUrl = `https://nominatim.openstreetmap.org/search?format=json&q=hospital|clinic&lat=${lat}&lon=${lon}&limit=20`;
-        const nomResponse = await fetch(nominatimUrl, {
-          headers: { 'User-Agent': 'EmergencyCopilotAI/1.0' },
-          signal: AbortSignal.timeout(10000)
-        });
-        
-        if (nomResponse.ok) {
-          const nomData = await nomResponse.json();
-          normalizedResults = nomData.map((el: any) => {
-            const hLat = parseFloat(el.lat);
-            const hLon = parseFloat(el.lon);
-            const dist = getDistance(lat, lon, hLat, hLon);
-            return {
-              id: `nom_${el.place_id}`,
-              name: el.name || 'Unknown Medical Facility',
-              lat: hLat,
-              lon: hLon,
-              distance: dist,
-              address: el.display_name || ''
-            };
-          });
-        } else {
-           throw new Error("Nominatim returned non-OK status");
-        }
-      } catch (nomErr) {
-        console.error("Nominatim fallback also failed:", nomErr);
-        return NextResponse.json({ success: false, message: 'All map servers are currently unavailable.' }, { status: 503 });
-      }
-    }
-
-    // Filter, sort, deduplicate
-    let finalResults = normalizedResults.filter((h: any) => h.lat && h.lon && h.name !== 'Unknown Medical Facility');
+    // Geoapify Places API for healthcare facilities within 5000m (5km)
+    const categories = 'healthcare.hospital,healthcare.clinic,healthcare.emergency_ward';
+    const radius = 5000;
+    const limit = 20;
     
+    // Geoapify expects longitude first, then latitude in filter and bias
+    const url = `https://api.geoapify.com/v2/places?categories=${categories}&filter=circle:${lon},${lat},${radius}&bias=proximity:${lon},${lat}&limit=${limit}&apiKey=${apiKey}`;
+
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json'
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(`Geoapify API responded with status: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    if (!data.features || data.features.length === 0) {
+      return NextResponse.json({ success: true, data: [] });
+    }
+
+    // Process and normalize Geoapify data
+    let finalResults = data.features.map((feature: any) => {
+      const props = feature.properties;
+      const hLat = props.lat;
+      const hLon = props.lon;
+      
+      // Distance is provided by Geoapify in meters if bias=proximity is used, converting to km
+      let dist = props.distance !== undefined ? props.distance / 1000 : 999; 
+      
+      if (dist === 999 && hLat && hLon) {
+        dist = getDistance(lat, lon, hLat, hLon);
+      }
+
+      return {
+        id: props.place_id || `geo_${Math.random()}`,
+        name: props.name || 'Unknown Medical Facility',
+        lat: hLat,
+        lon: hLon,
+        distance: dist,
+        address: props.formatted || `${props.street || ''} ${props.city || ''}`.trim()
+      };
+    });
+
+    // Filter out unknown names and items without coordinates
+    finalResults = finalResults.filter((h: any) => h.lat && h.lon && h.name !== 'Unknown Medical Facility');
+    
+    // Sort by distance
     finalResults.sort((a: any, b: any) => (a.distance || 0) - (b.distance || 0));
     
+    // Deduplicate by name
     finalResults = finalResults.filter((h: any, index: number, self: any[]) => 
       index === self.findIndex((t) => t.name === h.name)
     );
@@ -151,4 +79,17 @@ export async function POST(req: Request) {
     console.error("Error in /api/hospitals:", error);
     return NextResponse.json({ success: false, message: 'An unexpected error occurred.' }, { status: 500 });
   }
+}
+
+// Helper to calculate distance in km if Geoapify doesn't provide it
+function getDistance(lat1: number, lon1: number, lat2: number, lon2: number) {
+  const R = 6371;
+  const dLat = (lat2 - lat1) * (Math.PI / 180);
+  const dLon = (lon2 - lon1) * (Math.PI / 180);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) *
+    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
 }
