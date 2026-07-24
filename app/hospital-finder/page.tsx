@@ -40,6 +40,27 @@ export default function HospitalFinderPage() {
   const [activeFilter, setActiveFilter] = useState<string>('All Medical');
   const listRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
+  const [sheetHeight, setSheetHeight] = useState(45);
+  const sheetStartY = useRef(0);
+  const sheetStartHeight = useRef(0);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    sheetStartY.current = e.touches[0].clientY;
+    sheetStartHeight.current = sheetHeight;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    const deltaY = sheetStartY.current - e.touches[0].clientY;
+    const windowHeight = window.innerHeight;
+    const deltaPercent = (deltaY / windowHeight) * 100;
+    let newHeight = sheetStartHeight.current + deltaPercent;
+    
+    if (newHeight < 25) newHeight = 25; // min height
+    if (newHeight > 85) newHeight = 85; // max height
+
+    setSheetHeight(newHeight);
+  };
+
   useEffect(() => {
     if (selectedHospitalId && listRefs.current[selectedHospitalId]) {
       listRefs.current[selectedHospitalId]?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -209,7 +230,7 @@ export default function HospitalFinderPage() {
     <main className="flex-1 relative w-full h-[calc(100dvh-64px-env(safe-area-inset-top))] md:h-[calc(100dvh-72px-env(safe-area-inset-top))] flex flex-col md:flex-row bg-[var(--color-surface)] overflow-hidden">
       
       {/* Map Section */}
-      <div className="relative w-full basis-[60%] md:basis-[70%] md:flex-none z-0 flex flex-col">
+      <div className="relative w-full h-[60%] md:h-full md:basis-[70%] shrink-0 md:flex-none z-0 flex flex-col">
         {location && !geoError ? (
           <HospitalMap 
             location={location} 
@@ -285,9 +306,16 @@ export default function HospitalFinderPage() {
       </div>
 
       {/* Sidebar / Bottom Sheet Section */}
-      <div className="relative w-full flex-1 z-30 flex flex-col md:basis-[30%] md:flex-none md:bg-[var(--color-surface)] md:border-l md:border-[var(--color-outline-variant)] bg-[var(--color-surface)] rounded-t-[32px] md:rounded-none -mt-6 md:mt-0 shadow-[0_-8px_30px_rgba(0,0,0,0.12)] md:shadow-2xl transition-all">
+      <div 
+        className="absolute md:relative bottom-0 left-0 w-full h-[var(--sheet-height)] md:h-full z-30 flex flex-col md:basis-[30%] md:flex-none md:bg-[var(--color-surface)] md:border-l md:border-[var(--color-outline-variant)] bg-[var(--color-surface)] rounded-t-[32px] md:rounded-none shadow-[0_-8px_30px_rgba(0,0,0,0.12)] md:shadow-2xl transition-none md:transition-all"
+        style={{ '--sheet-height': `${sheetHeight}%` } as React.CSSProperties}
+      >
         {/* Mobile Drag Handle */}
-        <div className="w-full flex justify-center pt-3 pb-1 md:hidden shrink-0">
+        <div 
+          className="w-full flex justify-center pt-3 pb-3 md:hidden shrink-0 touch-none cursor-grab active:cursor-grabbing"
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+        >
           <div className="w-12 h-1.5 bg-[var(--color-outline-variant)] rounded-full"></div>
         </div>
 

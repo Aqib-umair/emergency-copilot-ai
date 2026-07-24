@@ -14,7 +14,7 @@ export default function Home() {
       nextLabel={t('home.helpButton', 'START')} 
       nextPath="/patient-details"
     >
-      <div className="flex-1 flex flex-col items-center justify-center px-[var(--spacing-margin-mobile)] relative z-10 w-full h-full pb-10">
+      <div className="flex-1 flex flex-col items-center justify-center px-[var(--spacing-margin-mobile)] relative z-10 w-full h-full pb-10 pt-6 md:pt-0">
         {/* Hero Section: Animated Help Button */}
         <div className="flex-1 flex flex-col items-center justify-center w-full max-w-md mx-auto relative">
           <div className="relative flex items-center justify-center w-64 h-64 mb-8">
