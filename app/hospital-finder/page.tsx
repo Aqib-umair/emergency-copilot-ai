@@ -127,7 +127,7 @@ export default function HospitalFinderPage() {
     <main className="flex-1 relative w-full h-[calc(100vh-var(--spacing-touch-target-min))] overflow-hidden flex flex-col md:flex-row pt-[var(--spacing-touch-target-min)]">
       
       {/* Map Section */}
-      <div className="relative w-full h-[65%] md:w-2/3 md:h-full lg:w-3/4 z-0">
+      <div className="relative w-full basis-[65%] md:basis-auto md:w-2/3 lg:w-3/4 z-0 flex flex-col">
         {location && !geoError ? (
           <HospitalMap 
             location={location} 
@@ -191,7 +191,7 @@ export default function HospitalFinderPage() {
       </div>
 
       {/* Sidebar / Bottom Sheet Section */}
-      <div className="relative w-full h-[35%] z-30 flex flex-col md:h-full md:w-1/3 lg:w-1/4 md:bg-[var(--color-surface)] md:border-l md:border-[var(--color-outline-variant)] md:shadow-xl bg-[var(--color-surface)]">
+      <div className="relative w-full basis-[35%] z-30 flex flex-col md:basis-auto md:w-1/3 lg:w-1/4 md:bg-[var(--color-surface)] md:border-l md:border-[var(--color-outline-variant)] md:shadow-xl bg-[var(--color-surface)]">
         <div className="flex flex-col h-full overflow-hidden p-4 pt-4 shadow-[0_-4px_16px_rgba(0,0,0,0.05)] md:shadow-none border-t md:border-t-0 border-[var(--color-outline-variant)]">
           
           <div className="flex justify-between items-center mb-[var(--spacing-stack-md)] shrink-0">
