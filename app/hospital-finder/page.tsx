@@ -11,6 +11,13 @@ const HospitalMap = dynamic(() => import('../../components/maps/HospitalMap'), {
   loading: () => <div className="w-full h-full flex items-center justify-center bg-[var(--color-surface-variant)] text-[var(--color-on-surface-variant)]">Loading Map...</div>
 });
 
+const getCategory = (name: string) => {
+  const lowerName = name.toLowerCase();
+  if (lowerName.includes('pharmacy') || lowerName.includes('chemist')) return 'pharmacies';
+  if (lowerName.includes('emergency') || lowerName.includes('urgent')) return 'emergency centres';
+  return 'hospitals';
+};
+
 export default function HospitalFinderPage() {
   const router = useRouter();
   const [hospitals, setHospitals] = useState<any[]>([]);
@@ -19,6 +26,7 @@ export default function HospitalFinderPage() {
   const [geoError, setGeoError] = useState<string | null>(null);
   const caseId = useEmergencyStore((state) => state.caseId);
   const [selectedHospitalId, setSelectedHospitalId] = useState<string | number | null>(null);
+  const [activeFilter, setActiveFilter] = useState<string>('All Medical');
   const listRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
   useEffect(() => {
@@ -121,7 +129,10 @@ export default function HospitalFinderPage() {
     requestLocation();
   }, [requestLocation]);
 
-  const topHospitals = useMemo(() => hospitals, [hospitals]);
+  const topHospitals = useMemo(() => {
+    if (activeFilter === 'All Medical') return hospitals;
+    return hospitals.filter(h => getCategory(h.name) === activeFilter.toLowerCase());
+  }, [hospitals, activeFilter]);
 
   return (
     <main className="flex-1 relative w-full h-[calc(100vh-var(--spacing-touch-target-min))] overflow-hidden flex flex-col md:flex-row pt-[var(--spacing-touch-target-min)] bg-[var(--color-surface)]">
@@ -131,7 +142,7 @@ export default function HospitalFinderPage() {
         {location && !geoError ? (
           <HospitalMap 
             location={location} 
-            hospitals={hospitals} 
+            hospitals={topHospitals} 
             selectedHospitalId={selectedHospitalId}
             onHospitalSelect={setSelectedHospitalId}
           />
@@ -174,18 +185,25 @@ export default function HospitalFinderPage() {
           
           {/* Filter Chips */}
           <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide pointer-events-auto">
-            {['All Medical', 'Hospitals', 'Pharmacies'].map(filter => (
-              <button 
-                key={filter}
-                className={`whitespace-nowrap px-4 py-2 rounded-full text-sm font-bold border transition-colors shadow-sm ${
-                  filter === 'All Medical' 
-                    ? 'bg-[var(--color-primary)] text-[var(--color-on-primary)] border-[var(--color-primary)]' 
-                    : 'bg-[var(--color-surface)]/90 backdrop-blur-md text-[var(--color-on-surface-variant)] border-[var(--color-outline-variant)] hover:bg-[var(--color-surface-container)]'
-                }`}
-              >
-                {filter}
-              </button>
-            ))}
+            {['All Medical', 'Hospitals', 'Pharmacies', 'Emergency Centres'].map(filter => {
+              const isActive = activeFilter === filter;
+              return (
+                <button 
+                  key={filter}
+                  onClick={() => setActiveFilter(filter)}
+                  className={`relative whitespace-nowrap px-4 py-2 pb-2.5 rounded-full text-sm font-bold border transition-all duration-300 shadow-sm ${
+                    isActive 
+                      ? 'bg-[var(--color-primary)] text-[var(--color-on-primary)] border-[var(--color-primary)]' 
+                      : 'bg-[var(--color-surface)]/90 backdrop-blur-md text-[var(--color-on-surface-variant)] border-[var(--color-outline-variant)] hover:bg-[var(--color-surface-container)]'
+                  }`}
+                >
+                  {filter}
+                  {isActive && (
+                    <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-4 h-0.5 bg-[var(--color-on-primary)] rounded-full animate-fade-in transition-all duration-300"></span>
+                  )}
+                </button>
+              );
+            })}
           </div>
         </div>
 
